@@ -105,7 +105,7 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double {
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
     fun sqr(x: Double) = x * x
     return sqrt(sqr(x1 + x2) + sqr(y1 + y2))
-    // В выражении под sqrt получается 25. При использовании на это выражение функции "sqrt" корень вычисляется дважды. Почему?
+    // В выражении под sqrt получается 25. При использовании на это выражение функции "sqrt" корень вычисляется дважды. Почему? 
 }
 
 /**
