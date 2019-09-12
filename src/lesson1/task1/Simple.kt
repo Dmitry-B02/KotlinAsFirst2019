@@ -62,8 +62,7 @@ fun main() {
 fun seconds(hours: Int, minutes: Int, seconds: Int): Int {
     val htos = hours * 3600
     val mtos = minutes * 60
-    val result = htos + mtos + seconds
-    return result
+    return htos + mtos + seconds
 }
 
 /**
@@ -77,8 +76,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
     val stov = sagenes * 48.0
     val atov = arshins * 16.0
     val sum = stov + atov + vershoks
-    val result = sum * 4.445 / 100
-    return result
+    return sum * 4.445 / 100
 }
 
 /**
@@ -91,9 +89,7 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double {
     val mtod = min / 60
     val stod = sec / 3600
     val sum = mtod + stod + deg
-    val result = sum / 180 * PI
-    return result
-    // Если поменять местами "/ 180" и "* PI", то программа не пройдёт тест. Почему?
+    return sum / 180 * PI
 }
 
 /**
@@ -104,8 +100,7 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double {
  */
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
     fun sqr(x: Double) = x * x
-    return sqrt(sqr(x1 + x2) + sqr(y1 + y2))
-    // В выражении под sqrt получается 25. При использовании на это выражение функции "sqrt" корень вычисляется дважды. Почему? 
+    return sqrt(sqr(x2 - x1) + sqr(y2 - y1))
 }
 
 /**
@@ -114,7 +109,7 @@ fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
  * Пользователь задает целое число, большее 100 (например, 3801).
  * Определить третью цифру справа в этом числе (в данном случае 8).
  */
-fun thirdDigit(number: Int): Int = TODO()
+fun thirdDigit(number: Int): Int = number / 100 % 10
 
 /**
  * Простая
@@ -123,7 +118,11 @@ fun thirdDigit(number: Int): Int = TODO()
  * прибыл на станцию назначения в h2 часов m2 минут того же дня (например в 13:01).
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
-fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int = TODO()
+fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int {
+    val arriveMins = hoursArrive * 60 + minutesArrive
+    val departMins = hoursDepart * 60 + minutesDepart
+    return arriveMins - departMins
+}
 
 /**
  * Простая
@@ -132,7 +131,13 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Сколько денег будет на счету через 3 года (с учётом сложных процентов)?
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
-fun accountInThreeYears(initial: Int, percent: Int): Double = TODO()
+fun accountInThreeYears(initial: Int, percent: Int): Double {
+    fun percents(x: Int, y: Int) = x * y / 100
+    val year1 = initial + percents(initial, percent)
+    val year2 = year1 + percents(year1, percent)
+    return year2.toDouble() + percents(year2, percent).toDouble()
+
+}
 
 /**
  * Простая
@@ -140,4 +145,11 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = TODO()
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int = TODO()
+fun numberRevert(number: Int): Int {
+    val d1 = number % 10
+    val d2 = number / 10 % 10
+    val d3 = number / 100 % 10
+    val numberString = "$d1$d2$d3"
+    return numberString.toInt()
+}
+
