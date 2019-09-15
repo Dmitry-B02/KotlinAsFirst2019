@@ -134,7 +134,13 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int {
+    return if ((kingX == rookX1 && kingX == rookX2) || (kingY == rookY1 && kingY == rookY2) || (kingX == rookX1 && kingY == rookY2) || (kingX == rookX2 && kingY == rookY1)) (3)
+    else if ((kingX == rookX1 && kingX != rookX2) || (kingY == rookY1) && (kingY != rookY2) || (kingX == rookX1 && kingY != rookY2) || (kingX != rookX2 && kingY == rookY1)) (1)
+    else if ((kingX != rookX1 && kingX == rookX2) || (kingY != rookY1 && kingY == rookY2) || (kingX != rookX1 && kingY == rookY2) || (kingX == rookX2 && kingY != rookY1)) (2)
+    else(0)
+}
+
 
 /**
  * Простая
