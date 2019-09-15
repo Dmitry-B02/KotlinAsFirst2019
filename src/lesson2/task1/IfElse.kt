@@ -173,7 +173,41 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    fun sqr(x: Double): Double = x * x
+    fun max(m: Double, n: Double, k: Double): Double = if (m >= n && m >= k) m else if (k >= m && k >= n) k else n
+    if (max(a, b, c) == a) {
+        return if (a > b + c) (-1)
+        else{
+            when {
+                sqr(a) == sqr(b) + sqr(c) -> 1
+                sqr(a) < sqr(b) + sqr(c) -> 0
+                else -> 2
+            }
+        }
+    }
+    if (max(a, b, c) == b) {
+        return if (b > a + c) (-1)
+        else{
+            when {
+                sqr(b) == sqr(a) + sqr(c) -> 1
+                sqr(b) < sqr(a) + sqr(c) -> 0
+                else -> 2
+            }
+        }
+    }
+    if (max(a, b, c) == c) {
+        return if (c > b + a) (-1)
+        else{
+             when {
+                 sqr(c) == sqr(b) + sqr(a) -> 1
+                 sqr(c) < sqr(b)+sqr(a) -> 0
+                 else -> 2
+             }
+        }
+    }
+    return(-1)
+}
 
 /**
  * Средняя
