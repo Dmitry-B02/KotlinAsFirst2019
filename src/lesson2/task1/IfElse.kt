@@ -142,6 +142,7 @@ fun whichRookThreatens(
 }
 
 
+
 /**
  * Простая
  *
@@ -156,7 +157,13 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int = when {
+        ((kotlin.math.abs(kingX - bishopX)) == (kotlin.math.abs(kingY - bishopY))) && (kingX == rookX || kingY == rookY) -> 3
+        (kotlin.math.abs(kingX - bishopX)) == (kotlin.math.abs(kingY - bishopY)) -> 2
+        (kingX == rookX) || (kingY == rookY) -> 1
+        else -> 0
+}
+
 
 /**
  * Простая
