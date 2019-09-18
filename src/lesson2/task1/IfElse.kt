@@ -3,8 +3,10 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import lesson1.task1.sqr
 import kotlin.math.max
 import kotlin.math.sqrt
+import kotlin.math.abs
 
 /**
  * Пример
@@ -63,25 +65,12 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    if (age in 1..10) {
-        return if (age % 10 == 1) ("$age год") else if (age % 10 in 2..4) ("$age года") else ("$age лет")
-    }
-    if (age in 11..20) {
-        return ("$age лет")
-    }
-    if (age in 21..100) {
-        return if (age % 10 == 1) ("$age год") else if (age % 10 in 2..4) ("$age года") else ("$age лет")
-    }
-    if (age in 101..120) {
-        return if (age % 100 == 1) ("$age год") else if (age % 100 in 2..4) ("$age года") else ("$age лет")
-    }
-    if (age in 121..200) {
-        return if (age % 10 == 1) ("$age год") else if (age % 10 in 2..4) ("$age года") else ("$age лет")
-    }
-    return ("число выходит за рамки заданного значения")
+fun ageDescription(age: Int): String = when {
+    age % 10 == 1 && age % 100 != 11 -> "$age год"
+    age % 10 in 2..4 && age % 100 !in 12..14-> "$age года"
+    age % 10 in 5..9 && age % 10 == 0 -> "$age лет"
+    else -> "$age лет"
 }
-
 
 
 /**
@@ -99,28 +88,13 @@ fun timeForHalfWay(
     val s1 = v1 * t1
     val s2 = v2 * t2
     val s3 = v3 * t3
-    val halfS = (s1 + s2 + s3) / 2.0
-    if (s1 > halfS) {
-        val sx1 = s1 - halfS
-        val tx1 = sx1 / v1
-        return (t1 - tx1)
+    val halfS = (s1 + s2 + s3) / 2
+    return when {
+        s1 >= halfS -> s1 / v1 - (s1 - halfS) / v1
+        s1 + s2 >= halfS -> t1 + t2 - (s1 + s2 - halfS) / (v2)
+        else -> t1 + t2 + t3 - (s1 + s2 + s3 - halfS) / (v3)
     }
-    else if (s1 < halfS) {
-        if (s1 + s2 == halfS) return (t1 + t2)
-        else if (s1 + s2 > halfS) {
-            val sx2 = s1 + s2 - halfS
-            val tx2 = sx2 / v2
-            return (t1 + t2 - tx2)
-        }
-        else if (s1 + s2 < halfS) {
-            val sx3 = s1 + s2 + s3 - halfS
-            val tx3 = sx3 / v3
-            return (t1 + t2 + t3 - tx3)
-        }
-    }
-    return (t1)
 }
-
 /**
  * Простая
  *
@@ -134,13 +108,12 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int {
-    return if ((kingX == rookX1 && kingX == rookX2) || (kingY == rookY1 && kingY == rookY2) || (kingX == rookX1 && kingY == rookY2) || (kingX == rookX2 && kingY == rookY1)) (3)
-    else if ((kingX == rookX1 && kingX != rookX2) || (kingY == rookY1) && (kingY != rookY2) || (kingX == rookX1 && kingY != rookY2) || (kingX != rookX2 && kingY == rookY1)) (1)
-    else if ((kingX != rookX1 && kingX == rookX2) || (kingY != rookY1 && kingY == rookY2) || (kingX != rookX1 && kingY == rookY2) || (kingX == rookX2 && kingY != rookY1)) (2)
-    else(0)
+): Int = when {
+    (kingX == rookX1 || kingY == rookY1) && (kingX == rookX2 || kingY == rookY2) -> 3
+    kingX == rookX1 || kingY == rookY1 -> 1
+    kingX == rookX2 || kingY == rookY2 -> 2
+    else -> 0
 }
-
 
 
 /**
@@ -158,10 +131,10 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int = when {
-        ((kotlin.math.abs(kingX - bishopX)) == (kotlin.math.abs(kingY - bishopY))) && (kingX == rookX || kingY == rookY) -> 3
-        (kotlin.math.abs(kingX - bishopX)) == (kotlin.math.abs(kingY - bishopY)) -> 2
-        (kingX == rookX) || (kingY == rookY) -> 1
-        else -> 0
+    ((abs(kingX - bishopX)) == (abs(kingY - bishopY))) && (kingX == rookX || kingY == rookY) -> 3
+    (abs(kingX - bishopX)) == (abs(kingY - bishopY)) -> 2
+    (kingX == rookX) || (kingY == rookY) -> 1
+    else -> 0
 }
 
 
@@ -174,39 +147,32 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    fun sqr(x: Double): Double = x * x
-    fun max(m: Double, n: Double, k: Double): Double = if (m >= n && m >= k) m else if (k >= m && k >= n) k else n
-    if (max(a, b, c) == a) {
-        return if (a > b + c) (-1)
-        else{
-            when {
-                sqr(a) == sqr(b) + sqr(c) -> 1
-                sqr(a) < sqr(b) + sqr(c) -> 0
-                else -> 2
-            }
+    fun max(m: Double, n: Double, k: Double) = when {
+        m >= n && m >= k -> m
+        k >= m && k >= n -> k
+        else -> n
+    }
+    fun sumMin(m: Double, n: Double, k: Double) = when {
+        m >= n && m >= k -> n + k
+        k >= m && k >= n -> m + n
+        else -> m + k
+    }
+    fun sqrSumMin(m: Double, n: Double, k: Double) = when {
+        m >= n && m >= k -> sqr(n) + sqr(k)
+        k >= m && k >= n -> sqr(m)+sqr(n)
+        else -> sqr(m)+sqr(k)
+    }
+    val max = max(a, b, c)
+    val sumMin = sumMin(a, b, c)
+    val sqrSumMin = sqrSumMin(a, b, c)
+    return if (max > sumMin) -1
+    else {
+        when {
+            sqr(max) == sqrSumMin -> 1
+            sqr(max) < sqrSumMin -> 0
+            else -> 2
         }
     }
-    if (max(a, b, c) == b) {
-        return if (b > a + c) (-1)
-        else{
-            when {
-                sqr(b) == sqr(a) + sqr(c) -> 1
-                sqr(b) < sqr(a) + sqr(c) -> 0
-                else -> 2
-            }
-        }
-    }
-    if (max(a, b, c) == c) {
-        return if (c > b + a) (-1)
-        else{
-             when {
-                 sqr(c) == sqr(b) + sqr(a) -> 1
-                 sqr(c) < sqr(b)+sqr(a) -> 0
-                 else -> 2
-             }
-        }
-    }
-    return(-1)
 }
 
 /**
@@ -221,11 +187,10 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     return if (c > a) {
         if ((b <= d) && (b >= c)) (b - c)
         else if ((d <= b) && (d >= c)) (d - c)
-        else (-1)
-    }
-    else {
+        else -1
+    } else {
         if ((b >= a) && (b <= d)) (b - a)
         else if ((d >= a) && (d <= b)) (d - a)
-        else (-1)
+        else -1
     }
 }

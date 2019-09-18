@@ -73,8 +73,8 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int {
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double {
-    val stov = sagenes * 48.0
-    val atov = arshins * 16.0
+    val stov = sagenes * 48
+    val atov = arshins * 16
     val sum = stov + atov + vershoks
     return sum * 4.445 / 100
 }
@@ -93,10 +93,7 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double = (deg + min / 60.0 + se
  * Найти длину отрезка, соединяющего точки на плоскости с координатами (x1, y1) и (x2, y2).
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
-fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
-    fun sqr(x: Double) = x * x
-    return sqrt(sqr(x2 - x1) + sqr(y2 - y1))
-}
+fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double = sqrt(sqr(x2 - x1) + sqr(y2 - y1))
 
 /**
  * Простая
@@ -128,9 +125,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  */
 fun accountInThreeYears(initial: Int, percent: Int): Double {
     fun percents(x: Int): Double = (100.0 + x) / 100.0
-    val year1: Double = initial * percents(percent)
-    val year2: Double = year1 * percents(percent)
-    return year2 * percents(percent)
+    return initial * (percents(percent).pow(3))
 }
 
 /**
@@ -143,7 +138,6 @@ fun numberRevert(number: Int): Int {
     val d1 = number % 10
     val d2 = number / 10 % 10
     val d3 = number / 100 % 10
-    val numberString = "$d1$d2$d3"
-    return numberString.toInt()
+    return (d1 * 100 + d2 * 10 + d3)
 }
 
