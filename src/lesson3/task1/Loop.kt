@@ -3,6 +3,9 @@
 package lesson3.task1
 
 import lesson1.task1.sqr
+import ru.spbstu.kotlin.generate.combinators.shrinker
+import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 /**
@@ -74,17 +77,28 @@ fun digitNumber(n: Int): Int {
     do {
         count++
         number /= 10
-    } while (number > 0)
+    } while (number != 0)
     return count
 }
+
 /**
  * Простая
  *
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = if (n < 3) 1 else fib(n-1) + fib(n-2)
-// Оптимизировать
+fun fib(n: Int): Int {
+    var first = 1
+    var second = 1
+    var third = 2
+    if (n == 1 || n == 2) return 1
+    for (i in 3..n) {
+        third = first + second
+        first = second
+        second = third
+    }
+    return third
+}
 
 /**
  * Простая
@@ -125,17 +139,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    // Оптимизировать
-    var maxDivisor = 1
-    for (k in n / 2 downTo 2) {
-        if (n % k == 0) {
-            maxDivisor = k
-            break
-        }
-    }
-    return maxDivisor
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -162,16 +166,11 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var sqrExist = 0
     for (i in m..n) {
-        if (sqrt(i.toDouble()) * 10 % 10 == 0.0) {
-            sqrExist = 1
-            break
-        }
+        if (sqr(sqrt(i.toDouble()).toInt()) == i) return true
     }
-    return sqrExist == 1
+    return false
 }
-
 /**
  * Средняя
  *
@@ -188,7 +187,21 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var sum = 0
+    fun collatz(x: Int): Int = when {
+        x == 1 -> sum
+        x % 2 == 0 -> {
+            sum++
+            collatz(x / 2)
+        }
+        else -> {
+            sum++
+            collatz(3 * x + 1)
+        }
+    }
+    return collatz(x)
+}
 
 /**
  * Средняя
@@ -200,6 +213,7 @@ fun collatzSteps(x: Int): Int = TODO()
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double = TODO()
+
 
 /**
  * Средняя
@@ -219,7 +233,17 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var number = n
+    var reverseNumber = 0
+    var digit: Int
+    for (i in (digitNumber(n) - 1) downTo 0) {
+        digit = number % 10
+        number /= 10
+        reverseNumber += digit * 10.0.pow(i).toInt()
+    }
+    return reverseNumber
+}
 
 /**
  * Средняя
@@ -230,7 +254,7 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 /**
  * Средняя
@@ -240,7 +264,14 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    val digits = digitNumber(n)
+    if (digits == 1) return false
+    for (i in digits downTo 2) {
+        if (n / 10.0.pow(i - 1).toInt() % 10 != n / 10.0.pow(i - 2).toInt() % 10) return true
+    }
+    return false
+}
 
 /**
  * Сложная

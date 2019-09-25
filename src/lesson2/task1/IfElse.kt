@@ -90,9 +90,9 @@ fun timeForHalfWay(
     val s3 = v3 * t3
     val halfS = (s1 + s2 + s3) / 2
     return when {
-        s1 >= halfS -> s1 / v1 - (s1 - halfS) / v1
-        s1 + s2 >= halfS -> t1 + t2 - (s1 + s2 - halfS) / (v2)
-        else -> t1 + t2 + t3 - (s1 + s2 + s3 - halfS) / (v3)
+        s1 >= halfS -> halfS / v1
+        s1 + s2 >= halfS -> t1 + (halfS - s1) / v2
+        else -> t1 + t2 + (halfS - s1 - s2) / v3
     }
 }
 /**
@@ -147,31 +147,19 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    fun max(m: Double, n: Double, k: Double) = when {
-        m >= n && m >= k -> m
-        k >= m && k >= n -> k
-        else -> n
+    fun midOf(m: Double, n: Double, k: Double) = when {
+        m in k..n || m in n..k -> m
+        n in m..k || n in k..m -> n
+        else -> k
     }
-    fun sumMin(m: Double, n: Double, k: Double) = when {
-        m >= n && m >= k -> n + k
-        k >= m && k >= n -> m + n
-        else -> m + k
-    }
-    fun sqrSumMin(m: Double, n: Double, k: Double) = when {
-        m >= n && m >= k -> sqr(n) + sqr(k)
-        k >= m && k >= n -> sqr(m)+sqr(n)
-        else -> sqr(m)+sqr(k)
-    }
-    val max = max(a, b, c)
-    val sumMin = sumMin(a, b, c)
-    val sqrSumMin = sqrSumMin(a, b, c)
-    return if (max > sumMin) -1
-    else {
-        when {
-            sqr(max) == sqrSumMin -> 1
-            sqr(max) < sqrSumMin -> 0
-            else -> 2
-        }
+    val max = maxOf(a, b, c)
+    val mid = midOf(a, b, c)
+    val min = minOf(a, b, c)
+    return if (max > mid + min) -1
+    else when{
+        sqr(max) < sqr(mid) + sqr(min) -> 0
+        sqr(max) == sqr(mid) + sqr(min) -> 1
+        else -> 2
     }
 }
 
