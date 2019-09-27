@@ -4,6 +4,7 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 import ru.spbstu.kotlin.generate.combinators.shrinker
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -107,15 +108,19 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
+    fun algorithm(a: Int, b: Int): Int {
+        var a = m
+        var b = n
+        while (a != b) {
+            if (a > b) a -= b
+            else b -= a
+        }
+        return a
+    }
     var a = m
     var b = n
-    val gcf: Int
-    while (a != b) {
-        if (a > b) a -= b
-        else b -= a
-    }
-    gcf = a
-    return m * n / gcf
+    var result = algorithm(a, b)
+    return m * n / result
 }
 
 /**
@@ -212,7 +217,20 @@ fun collatzSteps(x: Int): Int {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var a = x % (2 * PI)
+    var alt = -1.0
+    var sin = 0.0
+    var i = 1
+    var k = 0
+    while (abs(a) >= eps) {
+        a = alt.pow(k) * x.pow(i) / factorial(i)
+        sin += a
+        i += 2
+        k ++
+    }
+    return sin
+}
 
 
 /**
@@ -282,7 +300,23 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var count = 0
+    var digit = 0.0
+    var sqr = 0
+    var number: Int
+    while (sqr != n && count != n) {
+        sqr ++
+        number = sqr(sqr)
+        for (i in 1..digitNumber(number)) {
+            digit = number / 10.0.pow(digitNumber(number) - i) % 10
+            count++
+            if (count == n) break
+            else continue
+        }
+    }
+    return digit.toInt()
+}
 
 /**
  * Сложная
@@ -293,4 +327,20 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var count = 0
+    var digit = 0.0
+    var fib = 0
+    var number: Int
+    while (fib != n && count != n) {
+        fib ++
+        number = fib(fib)
+        for (i in 1..digitNumber(number)) {
+            digit = number / 10.0.pow(digitNumber(number) - i) % 10
+            count++
+            if (count == n) break
+            else continue
+        }
+    }
+    return digit.toInt()
+}
