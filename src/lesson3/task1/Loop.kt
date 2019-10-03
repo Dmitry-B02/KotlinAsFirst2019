@@ -3,11 +3,20 @@
 package lesson3.task1
 
 import lesson1.task1.sqr
-import ru.spbstu.kotlin.generate.combinators.shrinker
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
+
+fun algorithm(a: Int, b: Int): Int {
+    var c = a
+    var d = b
+    while (c != d) {
+        if (c > d) c -= d
+        else d -= c
+    }
+    return c
+}
 
 /**
  * Пример
@@ -108,18 +117,7 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    fun algorithm(a: Int, b: Int): Int {
-        var a = m
-        var b = n
-        while (a != b) {
-            if (a > b) a -= b
-            else b -= a
-        }
-        return a
-    }
-    var a = m
-    var b = n
-    var result = algorithm(a, b)
+    val result = algorithm(m, n)
     return m * n / result
 }
 
@@ -153,15 +151,8 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    var a = m
-    var b = n
-    while (a != b) {
-        if (a > b) a -= b
-        else b -= a
-    }
-    return a == 1
-}
+fun isCoPrime(m: Int, n: Int): Boolean = algorithm(m, n) == 1
+
 
 /**
  * Простая
@@ -171,11 +162,13 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
+
     for (i in m..n) {
         if (sqr(sqrt(i.toDouble()).toInt()) == i) return true
     }
     return false
 }
+
 /**
  * Средняя
  *
@@ -218,17 +211,20 @@ fun collatzSteps(x: Int): Int {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    var a = x % (2 * PI)
-    var alt = -1.0
-    var sin = 0.0
-    var i = 1
-    var k = 0
-    while (abs(a) >= eps) {
-        a = alt.pow(k) * x.pow(i) / factorial(i)
-        sin += a
+    val alt = -1.0 // Смена знака
+    var sin = 0.0 // Результат
+    var i = 1 // Степени
+    var j = 0
+    val a = x % (2 * PI) // Оптимизация
+    var b = x // Каждый член ряда
+    while (abs(b) >= eps) {
+        b = alt.pow(j) * a.pow(i) / factorial(i)
+        sin += b
         i += 2
-        k ++
+        j++
     }
+    b = alt.pow(j) * a.pow(i) / factorial(i)
+    sin += b
     return sin
 }
 
@@ -242,7 +238,23 @@ fun sin(x: Double, eps: Double): Double {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    val alt = -1.0 // Смена знака
+    var cos = 0.0 // Результат
+    var i = 0 // Степени
+    var j = 0
+    val a = x % (2 * PI) // Оптимизация
+    var b = x // Каждый член ряда
+    while (abs(b) >= eps) {
+        b = alt.pow(j) * a.pow(i) / factorial(i)
+        cos += b
+        i += 2
+        j++
+    }
+    b = alt.pow(j) * a.pow(i) / factorial(i)
+    cos += b
+    return cos
+}
 
 /**
  * Средняя
@@ -332,14 +344,13 @@ fun fibSequenceDigit(n: Int): Int {
     var digit = 0.0
     var fib = 0
     var number: Int
-    while (fib != n && count != n) {
-        fib ++
+    while (count != n) {
+        fib++
         number = fib(fib)
         for (i in 1..digitNumber(number)) {
             digit = number / 10.0.pow(digitNumber(number) - i) % 10
             count++
             if (count == n) break
-            else continue
         }
     }
     return digit.toInt()
