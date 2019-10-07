@@ -3,10 +3,7 @@
 package lesson3.task1
 
 import lesson1.task1.sqr
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 fun algorithm(a: Int, b: Int): Int {
     var c = a
@@ -16,6 +13,10 @@ fun algorithm(a: Int, b: Int): Int {
         else d -= c
     }
     return c
+}
+
+fun getDigit(number: Int, i: Int): Double {
+    return number / 10.0.pow(digitNumber(number) - i) % 10
 }
 
 /**
@@ -162,10 +163,7 @@ fun isCoPrime(m: Int, n: Int): Boolean = algorithm(m, n) == 1
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-
-    for (i in m..n) {
-        if (sqr(sqrt(i.toDouble()).toInt()) == i) return true
-    }
+    if (ceil(sqrt(m.toDouble())) <= floor(sqrt(n.toDouble()))) return true
     return false
 }
 
@@ -223,8 +221,6 @@ fun sin(x: Double, eps: Double): Double {
         i += 2
         j++
     }
-    b = alt.pow(j) * a.pow(i) / factorial(i)
-    sin += b
     return sin
 }
 
@@ -251,8 +247,6 @@ fun cos(x: Double, eps: Double): Double {
         i += 2
         j++
     }
-    b = alt.pow(j) * a.pow(i) / factorial(i)
-    cos += b
     return cos
 }
 
@@ -317,14 +311,13 @@ fun squareSequenceDigit(n: Int): Int {
     var digit = 0.0
     var sqr = 0
     var number: Int
-    while (sqr != n && count != n) {
+    while (count != n) {
         sqr ++
         number = sqr(sqr)
         for (i in 1..digitNumber(number)) {
-            digit = number / 10.0.pow(digitNumber(number) - i) % 10
+            digit = getDigit(number, i)
             count++
             if (count == n) break
-            else continue
         }
     }
     return digit.toInt()
@@ -348,7 +341,7 @@ fun fibSequenceDigit(n: Int): Int {
         fib++
         number = fib(fib)
         for (i in 1..digitNumber(number)) {
-            digit = number / 10.0.pow(digitNumber(number) - i) % 10
+            digit = getDigit(number, i)
             count++
             if (count == n) break
         }
