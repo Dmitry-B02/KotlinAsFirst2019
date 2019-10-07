@@ -241,12 +241,12 @@ fun cos(x: Double, eps: Double): Double {
     var j = 0
     val a = x % (2 * PI) // Оптимизация
     var b = x // Каждый член ряда
-    while (abs(b) >= eps) {
+    do {
         b = alt.pow(j) * a.pow(i) / factorial(i)
         cos += b
         i += 2
         j++
-    }
+    } while (abs(b) >= eps)
     return cos
 }
 
