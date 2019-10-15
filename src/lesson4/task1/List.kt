@@ -12,6 +12,13 @@ import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+fun removeEmpty (list: MutableList<String>): MutableList<String> {
+    for (i in 0 until list.size) {
+        list.remove("")
+    }
+    return list
+}
+
 /**
  * Пример
  *
@@ -261,11 +268,11 @@ fun convert(n: Int, base: Int): List<Int> {
     var x = n
     var dig: Int
     val list = mutableListOf<Int>()
-    while (x != 0) {
+    do {
         dig = x % base
         list += dig
         x /= base
-    }
+    } while (x != 0)
     return list.reversed()
 }
 
@@ -322,8 +329,12 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val list = str.toList()
-    TODO()
+    val res = mutableListOf<Int>()
+    for (i in 0 until str.length) {
+        res += if (str[i].isDigit()) str[i] - '0'
+        else (str[i] - 'a' + 10)
+    }
+    return decimal(res, base)
 }
 
 /**
@@ -376,4 +387,38 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val list1 = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val list2 = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
+    val list3 = listOf("", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
+    val list4 = listOf("", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
+    val list5 = listOf("", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val list6 = listOf("тысяча", "тысячи", "тысяч")
+    val result = mutableListOf<String>()
+
+    result += list4[n / 100000 % 10]
+
+    if (n / 1000 % 100 in 10..19) result += list2[n / 1000 % 10]
+    else {
+        result += list3[n / 10000 % 10]
+        result += list5[n / 1000 % 10]
+    }
+
+    removeEmpty(result)
+
+    if (result.isNotEmpty()) {
+        if (list5[n / 1000 % 10] == "одна") result += list6[0]
+        else if (list5[n / 1000 % 10] == "две" || list5[n / 1000 % 10] == "три") result += list6[1]
+        else result += list6[2]
+    }
+
+    result += list4[n / 100 % 10]
+
+    if (n % 100 in 10..19) result += list2[n % 10]
+    else {
+        result += list3[n / 10 % 10]
+        result += list1[n % 10]
+    }
+    removeEmpty(result)
+    return result.joinToString(" ")
+}
