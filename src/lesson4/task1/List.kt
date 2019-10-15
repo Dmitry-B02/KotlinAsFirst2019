@@ -433,10 +433,10 @@ fun russian(n: Int): String {
     removeEmpty(result)
 
     if (result.isNotEmpty()) {
-        if (list5[n / 1000 % 10] == "одна") result += list6[0]
-        else if (list5[n / 1000 % 10] == "две"
+        if (list5[n / 1000 % 10] == "одна" && n / 1000 % 100 !in 10..19) result += list6[0]
+        else if ((list5[n / 1000 % 10] == "две"
             || list5[n / 1000 % 10] == "три"
-            || list5[n / 1000 % 10] == "четыре") result += list6[1]
+            || list5[n / 1000 % 10] == "четыре")&& n / 1000 % 100 !in 10..19) result += list6[1]
         else result += list6[2]
     }
 
