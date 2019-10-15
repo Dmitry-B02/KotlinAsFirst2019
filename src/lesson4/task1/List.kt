@@ -12,7 +12,7 @@ import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-fun removeEmpty (list: MutableList<String>): MutableList<String> {
+fun removeEmpty(list: MutableList<String>): MutableList<String> {
     for (i in 0 until list.size) {
         list.remove("")
     }
@@ -288,8 +288,10 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    val alphabet = listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-        'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+    val alphabet = listOf(
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+        'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+    )
     val list = convert(n, base)
     val result = mutableListOf<Any>()
     for (i in 0 until list.size) {
@@ -380,6 +382,7 @@ fun roman(n: Int): String {
 
     return res.joinToString("")
 }
+
 /**
  * Очень сложная
  *
@@ -389,9 +392,32 @@ fun roman(n: Int): String {
  */
 fun russian(n: Int): String {
     val list1 = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
-    val list2 = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
-    val list3 = listOf("", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
-    val list4 = listOf("", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
+    val list2 = listOf(
+        "десять",
+        "одиннадцать",
+        "двенадцать",
+        "тринадцать",
+        "четырнадцать",
+        "пятнадцать",
+        "шестнадцать",
+        "семнадцать",
+        "восемнадцать",
+        "девятнадцать"
+    )
+    val list3 = listOf(
+        "",
+        "",
+        "двадцать",
+        "тридцать",
+        "сорок",
+        "пятьдесят",
+        "шестьдесят",
+        "семьдесят",
+        "восемьдесят",
+        "девяносто"
+    )
+    val list4 =
+        listOf("", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
     val list5 = listOf("", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     val list6 = listOf("тысяча", "тысячи", "тысяч")
     val result = mutableListOf<String>()
@@ -408,7 +434,9 @@ fun russian(n: Int): String {
 
     if (result.isNotEmpty()) {
         if (list5[n / 1000 % 10] == "одна") result += list6[0]
-        else if (list5[n / 1000 % 10] == "две" || list5[n / 1000 % 10] == "три") result += list6[1]
+        else if (list5[n / 1000 % 10] == "две"
+            || list5[n / 1000 % 10] == "три"
+            || list5[n / 1000 % 10] == "четыре") result += list6[1]
         else result += list6[2]
     }
 
