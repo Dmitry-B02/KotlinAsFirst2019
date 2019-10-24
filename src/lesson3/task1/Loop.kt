@@ -162,10 +162,7 @@ fun isCoPrime(m: Int, n: Int): Boolean = algorithm(m, n) == 1
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean {
-    if (ceil(sqrt(m.toDouble())) <= floor(sqrt(n.toDouble()))) return true
-    return false
-}
+fun squareBetweenExists(m: Int, n: Int): Boolean = ceil(sqrt(m.toDouble())) <= floor(sqrt(n.toDouble()))
 
 /**
  * Средняя
