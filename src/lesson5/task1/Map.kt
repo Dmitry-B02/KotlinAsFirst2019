@@ -378,6 +378,17 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
                     friendsMutable[friends[friends.keys.elementAt(i)]!!.toList()[k]] = setOf()
             }
         }
+        for (i in 0 until friends.size) {
+            if (friends.keys.elementAt(i) in friendsMutable[key]!!.toList() && friends.keys.elementAt(i) != key) {
+                res += friends[friends.keys.elementAt(i)]!!.toList()
+                friendsMutable[key] = res.filter{it != key}.toSet()
+            }
+            for (k in 0 until friends[friends.keys.elementAt(i)]!!.toList().size) {
+                if (friends[friends.keys.elementAt(i)]!!.toList()[k] !in listOfKeys)
+                    friendsMutable[friends[friends.keys.elementAt(i)]!!.toList()[k]] = setOf()
+            }
+        }
+        // использовал один и тот же цикл 2 раза для полного перебора всех элементов в каждом кее
         res.clear()
     }
     return friendsMutable
@@ -404,9 +415,10 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var b = 1
     for (i in 0 until list.size) {
         for (k in b until list.size) {
-            if (list[i] + list[k] == number) return (i to k)
+            if (list[i] + list[k] == number && i != k) return (i to k)
             b++ // см. переменную b в fun hasAnagrams
         }
+        b = 0
     }
     return (-1 to -1)
 }
