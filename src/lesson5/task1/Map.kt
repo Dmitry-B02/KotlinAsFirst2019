@@ -10,8 +10,12 @@ fun wordToCharSet(word: String): Set<Char> {
     return res
 }
 
-fun dotBeforeNumber (n: List<String>): String {
-    return n.joinToString("", "1.")
+fun getSales(list: List<Pair<String, Double>>): List<String> {
+    var set = setOf<String>()
+    for (element in list) {
+        set += element.first
+    }
+    return set.toList()
 }
 
 /**
@@ -195,8 +199,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
         if (max[key] != mapA[key] && mapA[key] != null) {
             str = mapA[key] + ", " + max[key]
             res[key] = str
-        }
-        else res[key] = max[key]!! // max[key] не может быть равен null, т.к. у службы не может не быть номера
+        } else res[key] = max[key]!! // max[key] не может быть равен null, т.к. у службы не может не быть номера
     }
     return res
 }
@@ -212,7 +215,24 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    TODO()
+    val salesName = getSales(stockPrices)
+    var k = 0
+    var count = 0
+    var sum = 0.0
+    val res = mutableMapOf<String, Double>()
+    while (k < salesName.size) {
+        for (i in 0 until stockPrices.size) {
+            if (stockPrices[i].first == salesName[k]) {
+                count++
+                sum += stockPrices[i].second
+            }
+        }
+        res[salesName[k]] = sum / count
+        sum = 0.0
+        count = 0
+        k++
+    }
+    return res
 }
 
 /**
@@ -231,7 +251,16 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    TODO()
+    var min = Double.MAX_VALUE
+    var a = ""
+    for ((key) in stuff) {
+        if (kind == stuff[key]?.first && stuff[key]!!.second < min) {
+            min = stuff[key]!!.second
+            a = key
+        }
+    }
+    if (a == "") return null
+    return a
 }
 
 /**
@@ -246,7 +275,11 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     val setWord = wordToCharSet(word)
     val setChars = chars.toSet()
-    return setWord == setChars
+    for (element in setWord) {
+        if (element !in setChars) return false
+    }
+    return true
+    //return setWord == setChars || word == ""
 }
 
 /**
@@ -262,14 +295,21 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
-    val listFiltered = list.toSet()
-    val countList = mutableListOf<Int>()
+    val listFiltered = list.toSet().toMutableList()
+    val result = mutableMapOf<String, Int>()
+    var k = 0
     var count = 0
-    for (i in 0 until list.size) {
-       // if (list[i] = )
+    while (k < listFiltered.size) {
+        for (i in 0 until list.size) {
+            if (list[i] == listFiltered[k]) count++
+        }
+        if (count > 1) result[listFiltered[k]] = count
+        count = 0
+        k++
     }
-    TODO()
+    return result
 }
+
 
 /**
  * Средняя
@@ -281,10 +321,16 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    for (i in words.size downTo 1) {
-        if (wordToCharSet(words[i]) != wordToCharSet(words[i-1])) return false
+    var b = 1 // ввёл переменную для того, чтобы исключить случаи в цикле, когда element == words[i]
+    for (element in words) {
+        for (i in b until words.size) {
+            if ((wordToCharSet(element).intersect(wordToCharSet(words[i])) == wordToCharSet(element)
+                        || wordToCharSet(element).intersect(wordToCharSet(words[i])) == wordToCharSet(words[i]))
+            ) return true
+        }
+        b++
     }
-    return true
+    return false
 }
 
 /**
@@ -311,7 +357,31 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val friendsMutable = friends.toMutableMap()
+    val map = mutableMapOf<String, Set<String>>()
+    val listOfKeys = mutableListOf<String>()
+
+    for ((key) in friends) {
+        listOfKeys += key
+    }
+
+    for ((key) in friends) {
+        val res = friends[key]!!.toMutableList()
+        for (i in 0 until friends.size) {
+            if (friends.keys.elementAt(i) in friendsMutable[key]!!.toList() && friends.keys.elementAt(i) != key) {
+                res += friends[friends.keys.elementAt(i)]!!.toList()
+                friendsMutable[key] = res.filter{it != key}.toSet()
+            }
+            for (k in 0 until friends[friends.keys.elementAt(i)]!!.toList().size) {
+                if (friends[friends.keys.elementAt(i)]!!.toList()[k] !in listOfKeys)
+                    friendsMutable[friends[friends.keys.elementAt(i)]!!.toList()[k]] = setOf()
+            }
+        }
+        res.clear()
+    }
+    return friendsMutable
+}
 
 /**
  * Сложная
@@ -330,7 +400,16 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    var b = 1
+    for (i in 0 until list.size) {
+        for (k in b until list.size) {
+            if (list[i] + list[k] == number) return (i to k)
+            b++ // см. переменную b в fun hasAnagrams
+        }
+    }
+    return (-1 to -1)
+}
 
 /**
  * Очень сложная

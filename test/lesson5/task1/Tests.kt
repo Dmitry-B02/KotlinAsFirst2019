@@ -239,6 +239,7 @@ class Tests {
         assertFalse(canBuildFrom(emptyList(), "foo"))
         assertTrue(canBuildFrom(listOf('a', 'b', 'o'), "baobab"))
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
+        assertTrue(canBuildFrom(listOf('a'), ""))
     }
 
     @Test
@@ -255,6 +256,10 @@ class Tests {
         assertEquals(
             emptyMap<String, Int>(),
             extractRepeats(listOf("a", "b", "c"))
+        )
+        assertEquals(
+            mapOf("a" to 3, "b" to 5),
+            extractRepeats(listOf("a", "c", "d", "b", "a", "a", "b", "b", "b", "b"))
         )
     }
 
