@@ -242,7 +242,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     var min = Double.MAX_VALUE
     var cheapestStuff: String? = "null"
     for ((key, value) in stuff) {
-        if (kind == value.first && value.second < min) {
+        if (kind == value.first && value.second <= min) {
             min = value.second
             cheapestStuff = key
         }
@@ -261,8 +261,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val setWord = wordToCharSet(word)
-    val setChars = chars.toSet()
+    val setWord = wordToCharSet(word.decapitalize())
+    val setChars = chars.joinToString().decapitalize().toSet()
     for (element in setWord) {
         if (element !in setChars) return false
     }
@@ -312,6 +312,7 @@ fun hasAnagrams(words: List<String>): Boolean {
     var b = 1 // ввёл переменную для того, чтобы исключить случаи в цикле, когда element == words[i]
     for (element in words) {
         for (i in b until words.size) {
+            if (wordToCharSet(element).isEmpty() && wordToCharSet(words[i]).isEmpty()) return true
             if (((wordToCharSet(element).intersect(wordToCharSet(words[i])) == wordToCharSet(element)
                         || wordToCharSet(element).intersect(wordToCharSet(words[i])) == wordToCharSet(words[i]))
                         && (wordToCharSet(element).isNotEmpty() || wordToCharSet(words[i]).isNotEmpty())))
@@ -432,4 +433,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    var costOfPiece: Int
+    TODO()
+}
