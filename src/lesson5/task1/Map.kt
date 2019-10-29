@@ -108,24 +108,12 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val gradesReversed = mutableMapOf<Int, List<String>>()
-    val student2 = mutableListOf<String>()
-    val student3 = mutableListOf<String>()
-    val student4 = mutableListOf<String>()
-    val student5 = mutableListOf<String>()
-    for ((name, grade) in grades) {
-        when (grade) {
-            5 -> student5 += name
-            4 -> student4 += name
-            3 -> student3 += name
-            2 -> student2 += name
-        }
+    val res = mutableMapOf<Int, MutableList<String>>()
+    for ((key) in grades) {
+        if (res.containsKey(grades[key]))res[grades[key]]?.plusAssign(key)
+        else res[grades[key]!!] = mutableListOf(key)
     }
-    if (student5.isNotEmpty()) gradesReversed[5] = student5
-    if (student4.isNotEmpty()) gradesReversed[4] = student4
-    if (student3.isNotEmpty()) gradesReversed[3] = student3
-    if (student2.isNotEmpty()) gradesReversed[2] = student2
-    return gradesReversed
+    return res
 }
 
 /**
@@ -252,15 +240,15 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var min = Double.MAX_VALUE
-    var a = ""
-    for ((key) in stuff) {
-        if (kind == stuff[key]?.first && stuff[key]!!.second < min) {
-            min = stuff[key]!!.second
-            a = key
+    var cheapestStuff: String? = "null"
+    for ((key, value) in stuff) {
+        if (kind == value.first && value.second < min) {
+            min = value.second
+            cheapestStuff = key
         }
     }
-    if (a == "") return null
-    return a
+    return if (cheapestStuff == "null") null
+    else cheapestStuff
 }
 
 /**
@@ -324,9 +312,10 @@ fun hasAnagrams(words: List<String>): Boolean {
     var b = 1 // ввёл переменную для того, чтобы исключить случаи в цикле, когда element == words[i]
     for (element in words) {
         for (i in b until words.size) {
-            if ((wordToCharSet(element).intersect(wordToCharSet(words[i])) == wordToCharSet(element)
+            if (((wordToCharSet(element).intersect(wordToCharSet(words[i])) == wordToCharSet(element)
                         || wordToCharSet(element).intersect(wordToCharSet(words[i])) == wordToCharSet(words[i]))
-            ) return true
+                        && (wordToCharSet(element).isNotEmpty() || wordToCharSet(words[i]).isNotEmpty())))
+                return true
         }
         b++
     }
@@ -359,7 +348,6 @@ fun hasAnagrams(words: List<String>): Boolean {
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val friendsMutable = friends.toMutableMap()
-    val map = mutableMapOf<String, Set<String>>()
     val listOfKeys = mutableListOf<String>()
 
     for ((key) in friends) {
@@ -371,7 +359,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
         for (i in 0 until friends.size) {
             if (friends.keys.elementAt(i) in friendsMutable[key]!!.toList() && friends.keys.elementAt(i) != key) {
                 res += friends[friends.keys.elementAt(i)]!!.toList()
-                friendsMutable[key] = res.filter{it != key}.toSet()
+                friendsMutable[key] = res.filter { it != key }.toSet()
             }
             for (k in 0 until friends[friends.keys.elementAt(i)]!!.toList().size) {
                 if (friends[friends.keys.elementAt(i)]!!.toList()[k] !in listOfKeys)
@@ -381,7 +369,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
         for (i in 0 until friends.size) {
             if (friends.keys.elementAt(i) in friendsMutable[key]!!.toList() && friends.keys.elementAt(i) != key) {
                 res += friends[friends.keys.elementAt(i)]!!.toList()
-                friendsMutable[key] = res.filter{it != key}.toSet()
+                friendsMutable[key] = res.filter { it != key }.toSet()
             }
             for (k in 0 until friends[friends.keys.elementAt(i)]!!.toList().size) {
                 if (friends[friends.keys.elementAt(i)]!!.toList()[k] !in listOfKeys)
