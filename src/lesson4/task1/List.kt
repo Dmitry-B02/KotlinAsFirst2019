@@ -5,19 +5,8 @@ package lesson4.task1
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import lesson3.task1.minDivisor
-import ru.spbstu.kotlin.generate.FromAlphabet
-import java.io.File.separator
-import kotlin.math.abs
-import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.sqrt
-
-fun removeEmpty(list: MutableList<String>): MutableList<String> {
-    for (i in 0 until list.size) {
-        list.remove("")
-    }
-    return list
-}
 
 /**
  * Пример
@@ -197,9 +186,8 @@ fun times(a: List<Int>, b: List<Int>): Int {
 fun polynom(p: List<Int>, x: Int): Int {
     var sum: Int
     var res = 0
-    for ((a, i) in (0 until p.size).withIndex()) {
-        sum = p[i] * x.toDouble().pow(a).toInt()
-        res += sum
+    for (i in 0 until p.size) {
+        res += p[i] * x.toDouble().pow(i).toInt()
     }
     return res
 }
@@ -216,7 +204,7 @@ fun polynom(p: List<Int>, x: Int): Int {
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
     for (i in 1 until list.size) {
-        list[i] += list[i-1]
+        list[i] += list[i - 1]
     }
     return list
 }
@@ -280,15 +268,11 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    val alphabet = listOf(
-        'a', 'a' + 1, 'a' + 2, 'a' + 3, 'a' + 4, 'a' + 5, 'a' + 6, 'a' + 7, 'a' + 8, 'a' + 9, 'a' + 10, 'a' + 11, 'a' + 12, 'a' + 13,
-        'a' + 14, 'a' + 15, 'a' + 16, 'a' + 17, 'a' + 18, 'a' + 19, 'a' + 20, 'a' + 21, 'a' + 22, 'a' + 23, 'a' + 24, 'a' + 25
-    )
     val list = convert(n, base)
-    val result = mutableListOf<Any>()
+    val result = mutableListOf<String>()
     for (i in 0 until list.size) {
-        if (list[i] > 9) result += alphabet[list[i] - 10]
-        else result += list[i]
+        result += if (list[i] < 10) list[i].toString()
+        else ('a' + list[i] - 10).toString()
     }
     return result.joinToString("")
 }
@@ -349,10 +333,12 @@ fun roman(n: Int): String {
     var rank2: Int
     var rank3: Int
     var rank4: Int
-    val list = listOf("", "M", "MM", "MMM", "", "", "", "", "", "", "",
+    val list = listOf(
+        "", "M", "MM", "MMM", "", "", "", "", "", "", "",
         "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
         "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
-        "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX")
+        "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"
+    )
     // ввёл 6 дополнительных пустых строк в список (после "МММ") для того, чтобы сохранялась закономерность при вычислении позиции
     val res = mutableListOf<String>()
     while (x > 0) {
@@ -404,6 +390,7 @@ fun russian(n: Int): String {
     val list5 = listOf("", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     val list6 = listOf("тысяча", "тысячи", "тысяч")
     val result = mutableListOf<String>()
+    var a = mutableListOf<String>()
 
     result += list4[n / 100000 % 10]
 
@@ -413,9 +400,7 @@ fun russian(n: Int): String {
         result += list5[n / 1000 % 10]
     }
 
-    removeEmpty(result)
-
-    if (result.isNotEmpty()) {
+    if (n / 1000 % 1000 > 0) {
         if (list5[n / 1000 % 10] == "одна" && n / 1000 % 100 !in 10..19) result += list6[0]
         else if ((list5[n / 1000 % 10] == "две"
                     || list5[n / 1000 % 10] == "три"
@@ -431,6 +416,6 @@ fun russian(n: Int): String {
         result += list3[n / 10 % 10]
         result += list1[n % 10]
     }
-    removeEmpty(result)
-    return result.joinToString(" ")
+
+    return result.filter { it != "" }.toMutableList().joinToString(" ")
 }
