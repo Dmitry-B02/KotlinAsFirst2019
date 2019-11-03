@@ -329,10 +329,6 @@ fun roman(n: Int): String {
     var b: String
     var i = 3 // Для подсчёта степеней 10
     var c = 0 // Для подсчёта позиции в списке
-    var rank1: Int
-    var rank2: Int
-    var rank3: Int
-    var rank4: Int
     val list = listOf(
         "", "M", "MM", "MMM", "", "", "", "", "", "", "",
         "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
