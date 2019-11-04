@@ -2,8 +2,16 @@
 
 package lesson5.task1
 
+fun wordToCharSet(word: String): Set<Char> {
+    val res = mutableSetOf<Char>()
+    for (i in 0 until word.length) {
+        res += word[i]
+    }
+    return res
+}
+
 fun getSales(list: List<Pair<String, Double>>): Set<String> {
-    val res = mutableSetOf<String>()
+    var res = setOf<String>()
     for (element in list) {
         res += element.first
     }
@@ -317,7 +325,9 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    TODO()
+}
 
 /**
  * Сложная
@@ -366,4 +376,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): MutableMap<MutableList<String>, Pair<Int, Int>> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    var costOfPiece: Int
+    TODO()
+}
