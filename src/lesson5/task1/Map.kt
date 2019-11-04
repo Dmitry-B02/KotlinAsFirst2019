@@ -2,16 +2,8 @@
 
 package lesson5.task1
 
-fun wordToCharSet(word: String): Set<Char> {
-    val res = mutableSetOf<Char>()
-    for (i in 0 until word.length) {
-        res += word[i]
-    }
-    return res
-}
-
 fun getSales(list: List<Pair<String, Double>>): Set<String> {
-    var res = setOf<String>()
+    val res = mutableSetOf<String>()
     for (element in list) {
         res += element.first
     }
@@ -210,7 +202,6 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
             res[element.first] = (res[element.first] ?: 0.0) + element.second
             countMap[element.first] = (countMap[element.first] ?: 0) + 1
         }
-        println(res[element.first])
     }
     for ((key) in res) {
         res[key] = res[key]!! / countMap[key]!!
@@ -326,9 +317,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    TODO()
-}
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
 /**
  * Сложная
