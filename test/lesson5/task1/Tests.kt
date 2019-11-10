@@ -1,5 +1,6 @@
 package lesson5.task1
 
+import kotlinx.html.A
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -283,6 +284,7 @@ class Tests {
         assertFalse(hasAnagrams(emptyList()))
         assertTrue(hasAnagrams(listOf("рот", "свет", "тор")))
         assertFalse(hasAnagrams(listOf("рот", "свет", "код", "дверь")))
+        assertFalse(hasAnagrams(listOf("тор", "тттоооооооооооооооооооооооооооррррррррррррррррррррр")))
     }
 
     @Test

@@ -2,6 +2,9 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+import java.lang.NumberFormatException
+
 /**
  * Пример
  *
@@ -69,7 +72,35 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+val months = listOf("января",
+    "февраля",
+    "марта",
+    "апреля",
+    "мая",
+    "июня",
+    "июля",
+    "августа",
+    "сентября",
+    "октября",
+    "ноября",
+    "декабря"
+)
+
+fun dateStrToDigit(str: String): String {
+    val parts = str.split(" ")
+    if (parts.size != 3) return ""
+    return try {
+        val day = parts[0].toInt()
+        val month = parts[1]
+        val year = parts[2].toInt()
+        val monthDig = months.indexOf(month) + 1
+        if (monthDig < 1 || year < 1 || day !in 1..daysInMonth(monthDig, year)) ""
+        else "%02d.%02d.%d".format(day, monthDig, year)
+    }
+    catch(e: Exception) {
+        ""
+    }
+}
 
 /**
  * Средняя
@@ -81,7 +112,21 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val parts = digital.split(".")
+    if (parts.size != 3) return ""
+    try {
+        val day = parts[0].toInt()
+        var month = parts[1]
+        val year = parts[2].toInt()
+        if (month.toInt() < 1 || year < 1 || day !in 1..daysInMonth(month.toInt(), year)) return ""
+        month = months[month.toInt() - 1]
+        return "%d %s %d".format(day, month, year)
+    }
+    catch(e: Exception) {
+        return ""
+    }
+}
 
 /**
  * Средняя
@@ -97,7 +142,11 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    return if (Regex("""[+]?[\d -]*([(][\d\s-]*[\d]+[\d\s-]*[)])?[\d -]*""").matches(phone))
+        Regex("""[\s-()]""").replace(phone, (""))
+    else ""
+}
 
 /**
  * Средняя
