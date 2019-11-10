@@ -339,6 +339,12 @@ class Tests {
                 )
             )
         )
+        assertEquals(
+            mapOf<String, Set<String>>(),
+            propagateHandshakes(
+                mapOf()
+            )
+        )
     }
 
     @Test

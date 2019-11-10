@@ -321,7 +321,6 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     val setOfNoHandshakes = mutableSetOf<String>()
     val map = mutableMapOf<String, Set<String>>()
     val friendsSet = mutableSetOf<String>()
-    println(getHandshakes(friends, friends.keys.elementAt(0), friends.keys.elementAt(0), friendsSet))
     for ((person) in friends) {
         map[person] = getHandshakes(friends, person, person, friendsSet)
         friendsSet.clear()
