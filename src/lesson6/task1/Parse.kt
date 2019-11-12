@@ -227,21 +227,15 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    try {
-        val strToLowerCase = Regex(""", """).replace(str.map { it.toLowerCase() }.joinToString(), "")
-        val listOfWords = strToLowerCase.split(" ")
-        var repetitiveWord = String()
-        for (i in 1 until listOfWords.size) {
-            if (listOfWords[i - 1] == listOfWords[i]) {
-                repetitiveWord += listOfWords[i]
-                break
-            }
+    val strToLowerCase = Regex(""", """).replace(str.map { it.toLowerCase() }.joinToString(), "")
+    var index = -1
+    for (repetitiveWord in strToLowerCase.split(" ")) {
+        if ("$repetitiveWord $repetitiveWord" in strToLowerCase) {
+            index = strToLowerCase.indexOf("$repetitiveWord $repetitiveWord")
+            break
         }
-        if (repetitiveWord.isEmpty()) return -1
-        return Regex("""$repetitiveWord $repetitiveWord""").find(strToLowerCase)!!.range.first
-    } catch (e: NullPointerException) {
-        return -1
     }
+    return index
 }
 
 /**
@@ -260,21 +254,24 @@ fun mostExpensive(description: String): String {
             description
         )
     ) return ""
-    val priceList = Regex("""[^\d\. ]""").replace(description, "").split(" ").filter { it != "" }.map { it.toDouble() }
     val shoppingList = description.split(" ").toMutableList()
+    val priceList = mutableListOf<Double>()
     var i = 1
-    val rowsToRemove = mutableListOf<String>() // лист с ценами, которые надо удалить
+    val rowsToRemove = mutableListOf<String>()
     while (i < shoppingList.size) {
         rowsToRemove += shoppingList[i]
-        i += 2 // Лист представлен в виде "товар - цена - товар - цена...", удаляю из него цену (каждый нечётный элемент)
+        i += 2
     }
     shoppingList.removeAll(rowsToRemove)
     var maxPrice = 0.0
+    // убираю все знаки, мешающие переводу строки в Double
+    priceList += Regex("""[^\d. ]""").replace(rowsToRemove.joinToString(" "), "")
+        // Превращаю строку в список, убираю пустые элементы и перевожу каждый из элементов в Double
+        .split(" ").filter { it != "" }.map { it.toDouble() }
     for (element in priceList) {
         if (element > maxPrice) maxPrice = element
     }
-    return shoppingList[priceList.indexOf(maxPrice)] // вывожу элемент из shoppingList по индексу, зная,
-    // что индекс максимального значения из priceList соответствует самому дорогому товару в shoppingList
+    return shoppingList[priceList.indexOf(maxPrice)]
 }
 
 /**

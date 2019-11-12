@@ -112,6 +112,7 @@ class Tests {
         assertEquals(-1, firstDuplicateIndex("a z"))
         assertEquals(0, firstDuplicateIndex("a a 6 6 a a a 6 6 a"))
         assertEquals(6, firstDuplicateIndex("a b a b b a b a"))
+        assertEquals(0, firstDuplicateIndex("^ ^"))
     }
 
     @Test
@@ -121,6 +122,7 @@ class Tests {
         assertEquals("Курица", mostExpensive("Хлеб 39.9; Молоко 62.5; Курица 184.0; Конфеты 89.9"))
         assertEquals("Вино", mostExpensive("Вино 255.0"))
         assertEquals("a", mostExpensive("a 0"))
+        assertEquals(".", mostExpensive(". 0"))
     }
 
     @Test
