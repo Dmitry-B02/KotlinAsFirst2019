@@ -113,6 +113,7 @@ class Tests {
         assertEquals(0, firstDuplicateIndex("a a 6 6 a a a 6 6 a"))
         assertEquals(6, firstDuplicateIndex("a b a b b a b a"))
         assertEquals(0, firstDuplicateIndex("^ ^"))
+        assertEquals(18, firstDuplicateIndex("a g a l a j a d a d d a a a a g a l a j a d a d d a a a"))
     }
 
     @Test

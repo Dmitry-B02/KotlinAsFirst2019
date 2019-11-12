@@ -229,8 +229,9 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     val strToLowerCase = Regex(""", """).replace(str.map { it.toLowerCase() }.joinToString(), "")
     var index = -1
-    for (repetitiveWord in strToLowerCase.split(" ")) {
-        if ("$repetitiveWord $repetitiveWord" in strToLowerCase) {
+    for (i in 1 until strToLowerCase.split(" ").size) {
+        val repetitiveWord = strToLowerCase.split(" ")[i]
+        if (strToLowerCase.split(" ")[i-1] == repetitiveWord) {
             index = strToLowerCase.indexOf("$repetitiveWord $repetitiveWord")
             break
         }
