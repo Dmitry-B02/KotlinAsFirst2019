@@ -234,6 +234,7 @@ fun firstDuplicateIndex(str: String): Int {
         for (i in 0 until list.size - 1) {
             if (list[i] == list[i + 1]) repetitiveWord = list[i]
         }
+        if (repetitiveWord.isEmpty()) return -1
         Regex("""$repetitiveWord $repetitiveWord""").find(strToLowerCase)!!.range.first
     } catch (e: Exception) {
         -1
@@ -252,7 +253,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    if (!Regex("""[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя]+ \d+(\.\d+)*(;* [АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя]+ \d+(\.\d+)*)*""").matches(
+    if (!Regex("""[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяA-z]+ \d+(\.\d+)*(;* [АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяA-z]+ \d+(\.\d+)*)*""").matches(
             description
         )
     ) return ""
