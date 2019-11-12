@@ -287,38 +287,41 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    if (Regex("""[IVXLCDM]""").replace(roman, "").isNotEmpty()) return -1
-    val romanToInt = mapOf('I' to 1, 'V' to 5, 'X' to 10, 'L' to 50, 'C' to 100, 'D' to 500, 'M' to 1000)
-    var checker = 1 // проверяет, больше ли, чем 3 раза, повторяется римская цифра
-    var res = romanToInt[roman[0]]!!
-    var temp1 = 0 // проверяет, идут ли две одинаковые римские цифры подряд перед большей
-    var temp2 = 0 // проверяет, идут ли три римские цифры от меньшей к большей
-    for (i in 0 until roman.length - 1) {
-        when {
-            romanToInt[roman[i]]!! == romanToInt[roman[i + 1]]!! -> {
-                if (checker < 3) {
-                    temp2 = 0
-                    res += romanToInt[roman[i + 1]]!!
-                    checker++
-                    temp1 = romanToInt[roman[i]]!!
+    try {
+        val romanToInt = mapOf('I' to 1, 'V' to 5, 'X' to 10, 'L' to 50, 'C' to 100, 'D' to 500, 'M' to 1000)
+        var checker = 1 // проверяет, больше ли, чем 3 раза, повторяется римская цифра
+        var res = romanToInt[roman[0]]!!
+        var temp1 = 0 // проверяет, идут ли две одинаковые римские цифры подряд перед большей
+        var temp2 = 0 // проверяет, идут ли три римские цифры от меньшей к большей
+        for (i in 0 until roman.length - 1) {
+            when {
+                romanToInt[roman[i]]!! == romanToInt[roman[i + 1]]!! -> {
+                    if (checker < 3) {
+                        temp2 = 0
+                        res += romanToInt[roman[i + 1]]!!
+                        checker++
+                        temp1 = romanToInt[roman[i]]!!
+                    } else return -1
                 }
-                else return -1
-            }
-            romanToInt[roman[i]]!! > romanToInt[roman[i + 1]]!! -> {
-                temp2 = 0
-                checker = 0
-                res += romanToInt[roman[i + 1]]!!
-            }
-            romanToInt[roman[i]]!! < romanToInt[roman[i + 1]]!! -> {
-                if (temp1 == romanToInt[roman[i]]) return -1
-                temp2 ++
-                if (temp2 > 1) return -1
-                checker = 0
-                res += romanToInt[roman[i + 1]]!! - 2 * romanToInt[roman[i]]!!
+                romanToInt[roman[i]]!! > romanToInt[roman[i + 1]]!! -> {
+                    temp2 = 0
+                    checker = 0
+                    res += romanToInt[roman[i + 1]]!!
+                }
+                romanToInt[roman[i]]!! < romanToInt[roman[i + 1]]!! -> {
+                    if (temp1 == romanToInt[roman[i]]) return -1
+                    temp2++
+                    if (temp2 > 1) return -1
+                    checker = 0
+                    res += romanToInt[roman[i + 1]]!! - 2 * romanToInt[roman[i]]!!
+                }
             }
         }
+        return res
     }
-    return res
+    catch (e: Exception) {
+        return -1
+    }
 }
 
 /**

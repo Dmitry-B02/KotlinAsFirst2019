@@ -138,6 +138,7 @@ class Tests {
         assertEquals(-1, fromRoman("IIII"))
         assertEquals(-1, fromRoman("IIVC")) // temp1
         assertEquals(-1, fromRoman("IVC")) // temp2
+        assertEquals(-1, fromRoman(""))
     }
 
     @Test
