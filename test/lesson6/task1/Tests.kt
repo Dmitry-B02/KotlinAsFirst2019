@@ -110,6 +110,8 @@ class Tests {
         assertEquals(40, firstDuplicateIndex("Яблоко упало на ветку с ветки оно упало на на землю"))
         assertEquals(9, firstDuplicateIndex("Мы пошли прямо Прямо располагался магазин"))
         assertEquals(-1, firstDuplicateIndex("a z"))
+        assertEquals(0, firstDuplicateIndex("a a 6 6 a a a 6 6 a"))
+        assertEquals(6, firstDuplicateIndex("a b a b b a b a"))
     }
 
     @Test
@@ -118,6 +120,7 @@ class Tests {
         assertEquals("", mostExpensive(""))
         assertEquals("Курица", mostExpensive("Хлеб 39.9; Молоко 62.5; Курица 184.0; Конфеты 89.9"))
         assertEquals("Вино", mostExpensive("Вино 255.0"))
+        assertEquals("a", mostExpensive("a 0"))
     }
 
     @Test

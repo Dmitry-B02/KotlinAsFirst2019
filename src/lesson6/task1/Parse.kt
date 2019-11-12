@@ -232,7 +232,10 @@ fun firstDuplicateIndex(str: String): Int {
         val strToLowerCase = Regex(""", """).replace(str.map { it.toLowerCase() }.joinToString(), "")
         val list = strToLowerCase.split(" ")
         for (i in 0 until list.size - 1) {
-            if (list[i] == list[i + 1]) repetitiveWord = list[i]
+            if (list[i] == list[i + 1]) {
+                repetitiveWord = list[i]
+                break
+            }
         }
         if (repetitiveWord.isEmpty()) return -1
         Regex("""$repetitiveWord $repetitiveWord""").find(strToLowerCase)!!.range.first
@@ -257,13 +260,13 @@ fun mostExpensive(description: String): String {
             description
         )
     ) return ""
-    var priceList = Regex("""[^\d\. ]""").replace(description, "").split(" ").filter { it != "" }
-    var shoppingList = Regex("""[^А-ЯЁёа-я ]""").replace(description, "").split(" ").filter { it != "" }
+    var priceList = Regex("""[^\d\. ]""").replace(description, "").split(" ").filter { it != "" }.map { it.toDouble() }
+    var shoppingList = Regex("""[^АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяA-z ]""").replace(description, "").split(" ").filter { it != "" }
     var maxPrice = 0.0
     for (element in priceList) {
-        if (element.toDouble() > maxPrice) maxPrice = element.toDouble()
+        if (element > maxPrice) maxPrice = element
     }
-    return shoppingList[priceList.indexOf(maxPrice.toString())] // вывожу элемент из shoppingList по индексу, зная,
+    return shoppingList[priceList.indexOf(maxPrice)] // вывожу элемент из shoppingList по индексу, зная,
     // что индекс максимального значения из priceList соответствует самому дорогому товару в shoppingList
 }
 
