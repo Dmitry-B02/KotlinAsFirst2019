@@ -307,7 +307,12 @@ fun hasAnagrams(words: List<String>): Boolean {
  *        )
  */
 
-fun getHandshakes(friends: Map<String, Set<String>>, currentPerson: String, originalPerson: String, friendsSet: MutableSet<String>): Set<String> {
+fun getHandshakes(
+    friends: Map<String, Set<String>>,
+    currentPerson: String,
+    originalPerson: String,
+    friendsSet: MutableSet<String>
+): Set<String> {
     for (friend in friends[currentPerson] ?: mutableSetOf()) {
         if (friendsSet + friend != friendsSet && friend != originalPerson) {
             friendsSet += friend

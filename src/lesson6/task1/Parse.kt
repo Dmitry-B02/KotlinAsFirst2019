@@ -3,6 +3,8 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import java.lang.IllegalArgumentException
+import java.lang.NullPointerException
 import java.lang.NumberFormatException
 
 /**
@@ -72,7 +74,8 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-val months = listOf("января",
+val months = listOf(
+    "января",
     "февраля",
     "марта",
     "апреля",
@@ -96,8 +99,7 @@ fun dateStrToDigit(str: String): String {
         val monthDig = months.indexOf(month) + 1
         if (monthDig < 1 || year < 0 || day !in 1..daysInMonth(monthDig, year)) ""
         else "%02d.%02d.%d".format(day, monthDig, year)
-    }
-    catch(e: Exception) {
+    } catch (e: Exception) {
         ""
     }
 }
@@ -122,8 +124,7 @@ fun dateDigitToStr(digital: String): String {
         if (month.toInt() < 1 || year < 0 || day !in 1..daysInMonth(month.toInt(), year)) return ""
         month = months[month.toInt() - 1]
         return "%d %s %d".format(day, month, year)
-    }
-    catch(e: Exception) {
+    } catch (e: Exception) {
         return ""
     }
 }
@@ -158,7 +159,13 @@ fun flattenPhoneNumber(phone: String): String {
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    var max = -1
+    for (result in Regex("""\d+""").findAll(jumps)) {
+        if (!jumps.contains(Regex("""[^\d %-]""")) && result.value.toInt() > max) max = result.value.toInt()
+    }
+    return max
+}
 
 /**
  * Сложная
@@ -171,7 +178,22 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    try {
+        var str = String()
+        val jumpsFiltered = Regex("""[^\d +]""").replace(jumps, "")
+        val b = Regex("""\d+ \+""").findAll(jumpsFiltered)
+        for (element in b) {
+            str += element.value
+        }
+        str = Regex("""\+""").replace(str, "")
+        val listOfResults = str.split(" ")
+        if (listOfResults.isEmpty()) return -1
+        return (listOfResults.max()!!.toInt())
+    } catch (e: Exception) {
+        return -1
+    }
+}
 
 /**
  * Сложная
@@ -182,7 +204,18 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    require(Regex("""^\d+ *((-|\+) \d+ *)*""").matches(expression))
+    val listOfExpression = expression.split(" ")
+    var res = listOfExpression[0].toInt()
+    for (i in listOfExpression.indices) {
+        when {
+            listOfExpression[i] == "+" -> res += listOfExpression[i + 1].toInt()
+            listOfExpression[i] == "-" -> res -= listOfExpression[i + 1].toInt()
+        }
+    }
+    return res
+}
 
 /**
  * Сложная
@@ -193,7 +226,19 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    return try {
+        var repetitiveWord = String()
+        val strToLowerCase = Regex(""", """).replace(str.map { it.toLowerCase() }.joinToString(), "")
+        val list = strToLowerCase.split(" ")
+        for (i in 0 until list.size - 1) {
+            if (list[i] == list[i + 1]) repetitiveWord = list[i]
+        }
+        Regex("""$repetitiveWord $repetitiveWord""").find(strToLowerCase)!!.range.first
+    } catch (e: Exception) {
+        -1
+    }
+}
 
 /**
  * Сложная
@@ -206,7 +251,20 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    if (!Regex("""[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя]+ \d+(\.\d+)*(;* [АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя]+ \d+(\.\d+)*)*""").matches(
+            description
+        )
+    ) return ""
+    var priceList = Regex("""[^\d\. ]""").replace(description, "").split(" ").filter { it != "" }
+    var shoppingList = Regex("""[^А-ЯЁёа-я ]""").replace(description, "").split(" ").filter { it != "" }
+    var maxPrice = 0.0
+    for (element in priceList) {
+        if (element.toDouble() > maxPrice) maxPrice = element.toDouble()
+    }
+    return shoppingList[priceList.indexOf(maxPrice.toString())] // вывожу элемент из shoppingList по индексу, зная,
+    // что индекс максимального значения из priceList соответствует самому дорогому товару в shoppingList
+}
 
 /**
  * Сложная
