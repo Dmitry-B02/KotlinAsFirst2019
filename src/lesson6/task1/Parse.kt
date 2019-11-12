@@ -227,20 +227,20 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    return try {
-        var repetitiveWord = String()
+    try {
         val strToLowerCase = Regex(""", """).replace(str.map { it.toLowerCase() }.joinToString(), "")
-        val list = strToLowerCase.split(" ")
-        for (i in 0 until list.size - 1) {
-            if (list[i] == list[i + 1]) {
-                repetitiveWord = list[i]
+        val listOfWords = strToLowerCase.split(" ")
+        var repetitiveWord = String()
+        for (i in 1 until listOfWords.size) {
+            if (listOfWords[i - 1] == listOfWords[i]) {
+                repetitiveWord += listOfWords[i]
                 break
             }
         }
         if (repetitiveWord.isEmpty()) return -1
-        Regex("""$repetitiveWord $repetitiveWord""").find(strToLowerCase)!!.range.first
-    } catch (e: Exception) {
-        -1
+        return Regex("""$repetitiveWord $repetitiveWord""").find(strToLowerCase)!!.range.first
+    } catch (e: NullPointerException) {
+        return -1
     }
 }
 
@@ -256,14 +256,19 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    if (!Regex("""[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяA-z]+ \d+(\.\d+)*(;* [АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяA-z]+ \d+(\.\d+)*)*""").matches(
+    if (!Regex("""[\S]+ \d+(\.\d+)*(;* [\S]+ \d+(\.\d+)*)*""").matches(
             description
         )
     ) return ""
-    var priceList = Regex("""[^\d\. ]""").replace(description, "").split(" ").filter { it != "" }.map { it.toDouble() }
-    var shoppingList =
-        Regex("""[^АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяA-z ]""").replace(description, "")
-            .split(" ").filter { it != "" }
+    val priceList = Regex("""[^\d\. ]""").replace(description, "").split(" ").filter { it != "" }.map { it.toDouble() }
+    val shoppingList = description.split(" ").toMutableList()
+    var i = 1
+    val rowsToRemove = mutableListOf<String>() // лист с ценами, которые надо удалить
+    while (i < shoppingList.size) {
+        rowsToRemove += shoppingList[i]
+        i += 2 // Лист представлен в виде "товар - цена - товар - цена...", удаляю из него цену (каждый нечётный элемент)
+    }
+    shoppingList.removeAll(rowsToRemove)
     var maxPrice = 0.0
     for (element in priceList) {
         if (element > maxPrice) maxPrice = element
