@@ -261,7 +261,9 @@ fun mostExpensive(description: String): String {
         )
     ) return ""
     var priceList = Regex("""[^\d\. ]""").replace(description, "").split(" ").filter { it != "" }.map { it.toDouble() }
-    var shoppingList = Regex("""[^АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяA-z ]""").replace(description, "").split(" ").filter { it != "" }
+    var shoppingList =
+        Regex("""[^АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяA-z ]""").replace(description, "")
+            .split(" ").filter { it != "" }
     var maxPrice = 0.0
     for (element in priceList) {
         if (element > maxPrice) maxPrice = element
