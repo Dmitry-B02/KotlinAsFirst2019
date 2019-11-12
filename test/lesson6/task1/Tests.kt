@@ -136,9 +136,12 @@ class Tests {
         assertEquals(49, fromRoman("XLIX"))
         assertEquals(-1, fromRoman("Z"))
         assertEquals(-1, fromRoman("IIII"))
-        assertEquals(-1, fromRoman("IIVC")) // temp1
-        assertEquals(-1, fromRoman("IVC")) // temp2
+        assertEquals(-1, fromRoman("IIVC"))
+        assertEquals(-1, fromRoman("IVC"))
         assertEquals(-1, fromRoman(""))
+        assertEquals(-1, fromRoman("VIV"))
+        assertEquals(-1, fromRoman("XIXX"))
+        assertEquals(-1, fromRoman("IXV"))
     }
 
     @Test

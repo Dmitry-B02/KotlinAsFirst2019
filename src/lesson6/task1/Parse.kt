@@ -289,35 +289,32 @@ fun mostExpensive(description: String): String {
 fun fromRoman(roman: String): Int {
     try {
         val romanToInt = mapOf('I' to 1, 'V' to 5, 'X' to 10, 'L' to 50, 'C' to 100, 'D' to 500, 'M' to 1000)
-        var checker = 1 // проверяет, больше ли, чем 3 раза, повторяется римская цифра
         var res = romanToInt[roman[0]]!!
-        var temp1 = 0 // проверяет, идут ли две одинаковые римские цифры подряд перед большей
-        var temp2 = 0 // проверяет, идут ли три римские цифры от меньшей к большей
         for (i in 0 until roman.length - 1) {
             when {
                 romanToInt[roman[i]]!! == romanToInt[roman[i + 1]]!! -> {
-                    if (checker < 3) {
-                        temp2 = 0
-                        res += romanToInt[roman[i + 1]]!!
-                        checker++
-                        temp1 = romanToInt[roman[i]]!!
-                    } else return -1
+                    res += romanToInt[roman[i + 1]]!!
                 }
                 romanToInt[roman[i]]!! > romanToInt[roman[i + 1]]!! -> {
-                    temp2 = 0
-                    checker = 0
                     res += romanToInt[roman[i + 1]]!!
                 }
                 romanToInt[roman[i]]!! < romanToInt[roman[i + 1]]!! -> {
-                    if (temp1 == romanToInt[roman[i]]) return -1
-                    temp2++
-                    if (temp2 > 1) return -1
-                    checker = 0
                     res += romanToInt[roman[i + 1]]!! - 2 * romanToInt[roman[i]]!!
                 }
             }
         }
-        return res
+        /**
+         * Скорее всего, как я понял, нет нужды проверять на корректность такие числа, как "IIII", "XIX" и т.д..
+         * Однако мне в голову пришла интересная, на мой взгляд, мысль, с помощью которой можно существенно упростить
+         * данную проверку, не заморачиваясь с дополнительными условиями в этой программе, поэтому ниже под комментарием
+         * я реализую эту необязательную часть программы.
+         */
+        // Зная то, что написанная программа правильно переводит римские числа в арабские и что обратная этой программа,
+        // написанная в четвёртом уроке, тоже работает корректно, я могу сравнить результаты программ и сделать вывод о
+        // корректности введённого римского числа
+        return if (lesson4.task1.roman(res) == roman) res
+        else -1
+        // Конец необязательной части
     }
     catch (e: Exception) {
         return -1
