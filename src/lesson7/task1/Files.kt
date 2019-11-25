@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.lang.StringBuilder
 
 /**
  * Пример
@@ -163,9 +164,42 @@ fun centerFile(inputName: String, outputName: String) {
  * 7) В самой длинной строке каждая пара соседних слов должна быть отделена В ТОЧНОСТИ одним пробелом
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
-fun alignFileByWidth(inputName: String, outputName: String) = {
-    TODO()
-    // 
+fun alignFileByWidth(inputName: String, outputName: String) {
+    val text = StringBuilder()
+    var maxLength = 0
+    for (line in File(inputName).readLines()) {
+        val shortenedLine = line.replace(Regex("""\s+"""), " ").trim()
+        if (shortenedLine.length > maxLength) maxLength = shortenedLine.length
+    }
+    for (line in File(inputName).readLines()) {
+        val shortenedLine = line.replace(Regex("""\s+"""), " ").trim()
+        val currentLength = shortenedLine.length
+        val spacesAmount = shortenedLine.split(" ").size - 1 // кол-во пробелов = кол-во слов - 1
+        if (spacesAmount < 1) {
+            text.append(shortenedLine)
+            text.append("\n")
+            continue
+        }
+        val addSpaces = (maxLength - currentLength) / spacesAmount
+        var mod = (maxLength - currentLength) % spacesAmount
+        var wordsLeft = shortenedLine.split(" ").size
+        for (word in shortenedLine.split(" ")) {
+            if (mod > 0 && wordsLeft > 1) {
+                text.append(word, " ".repeat(addSpaces + 2)) // т.к. учитываем ещё и изначальный пробел
+                mod--
+                wordsLeft--
+            }
+            else if (mod == 0 && wordsLeft > 1) {
+                text.append(word, " ".repeat(addSpaces + 1))
+                wordsLeft--
+            }
+            else {
+                text.append(word)
+            }
+        }
+        text.append("\n")
+    }
+    File(outputName).writeText(text.toString())
 }
 
 /**
