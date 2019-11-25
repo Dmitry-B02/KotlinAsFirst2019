@@ -68,6 +68,10 @@ class Tests {
         assertEquals("", flattenPhoneNumber("ab-123"))
         assertEquals("", flattenPhoneNumber("134_+874"))
         assertEquals("", flattenPhoneNumber("+"))
+        assertEquals("", flattenPhoneNumber("+ --  - -  1   -"))
+        assertEquals("+1355", flattenPhoneNumber("+ --  - -  1 ( 3 -5 -)  5 -  "))
+        assertEquals("1", flattenPhoneNumber(" --  - -  1   -"))
+        assertEquals("", flattenPhoneNumber("+ (4) 5 "))
     }
 
     @Test
@@ -77,6 +81,7 @@ class Tests {
         assertEquals(-1, bestLongJump("% - - % -"))
         assertEquals(754, bestLongJump("700 717 707 % 754"))
         assertEquals(-1, bestLongJump("700 + 700"))
+        assertEquals(-1, bestLongJump("977%-9 99"))
 
     }
 
@@ -86,6 +91,7 @@ class Tests {
         assertEquals(226, bestHighJump("226 +"))
         assertEquals(-1, bestHighJump("???"))
         assertEquals(230, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
+        assertEquals(-1, bestHighJump("250%-+"))
     }
 
     @Test
@@ -148,6 +154,7 @@ class Tests {
     @Tag("Impossible")
     fun computeDeviceCells() {
         assertEquals(listOf(0, 0, 0, 0, 0, 1, 1, 1, 1, 1), computeDeviceCells(10, "+>+>+>+>+", 10000))
+        assertEquals(listOf(0, 0, 0, 0, 0, 1, 1, 0, 0, 0), computeDeviceCells(10, "+>++>+   >+>+", 3))
         assertEquals(listOf(-1, -1, -1, -1, -1, 0, 0, 0, 0, 0), computeDeviceCells(10, "<-<-<-<-<-", 10000))
         assertEquals(listOf(1, 1, 1, 1, 1, 0, 0, 0, 0, 0), computeDeviceCells(10, "- <<<<< +[>+]", 10000))
         assertEquals(

@@ -53,7 +53,16 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val res = mutableMapOf<String, Int>()
+    val text = File(inputName).readText().toLowerCase()
+    for (string in substrings) {
+        var sum = 0
+        text.windowed(string.length, partialWindows = false) { if (it == string.toLowerCase()) sum++ }
+        res[string] = sum
+    }
+    return res
+}
 
 
 /**
@@ -70,7 +79,30 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val firstLetter = listOf('ж', 'Ж', 'ш', 'Ш', 'ч', 'Ч', 'щ', 'Щ')
+    val secondLetterReplacement = mapOf(
+        'ы' to 'и',
+        'Ы' to 'И',
+        'я' to 'а',
+        'Я' to 'А',
+        'ю' to 'у',
+        'Ю' to 'У'
+    )
+    for (line in File(inputName).readLines()) {
+        var lineChanged = line
+        val lineToList = line.toMutableList()
+        for (i in 0..line.length - 2) {
+            if (line[i] in firstLetter && line[i + 1] in secondLetterReplacement.keys) {
+                line.replace(line[i + 1], secondLetterReplacement[line[i + 1]]!!)
+                lineToList[i + 1] = secondLetterReplacement[line[i + 1]]!!
+                lineChanged = lineToList.joinToString("")
+            }
+        }
+        writer.write(lineChanged)
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**

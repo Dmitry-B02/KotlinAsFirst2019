@@ -6,6 +6,7 @@ import lesson2.task2.daysInMonth
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.lang.NumberFormatException
+import kotlin.math.floor
 
 /**
  * Пример
@@ -92,16 +93,13 @@ val months = listOf(
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     if (parts.size != 3) return ""
-    return try {
-        val day = parts[0].toInt()
-        val month = parts[1]
-        val year = parts[2].toInt()
-        val monthDig = months.indexOf(month) + 1
-        if (monthDig < 1 || year < 0 || day !in 1..daysInMonth(monthDig, year)) ""
-        else "%02d.%02d.%d".format(day, monthDig, year)
-    } catch (e: Exception) {
-        ""
-    }
+    val day = parts[0].toIntOrNull()
+    val month = parts[1]
+    val year = parts[2].toIntOrNull()
+    val monthDig = months.indexOf(month) + 1
+    return if (day != null && year != null && monthDig in 1..12 && year >= 0 && day in 0..daysInMonth(monthDig, year)) {
+        "%02d.%02d.%d".format(day, monthDig, year)
+    } else ""
 }
 
 /**
@@ -117,16 +115,17 @@ fun dateStrToDigit(str: String): String {
 fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
     if (parts.size != 3) return ""
-    try {
-        val day = parts[0].toInt()
-        var month = parts[1]
-        val year = parts[2].toInt()
-        if (month.toInt() < 1 || year < 0 || day !in 1..daysInMonth(month.toInt(), year)) return ""
-        month = months[month.toInt() - 1]
-        return "%d %s %d".format(day, month, year)
-    } catch (e: Exception) {
-        return ""
-    }
+    val day = parts[0].toIntOrNull()
+    val month = parts[1].toIntOrNull()
+    val year = parts[2].toIntOrNull()
+    return if (day != null && month != null && year != null && day in 1..daysInMonth(
+            month,
+            year
+        ) && year >= 0 && month > 0
+    ) {
+        val monthStr = months[month - 1]
+        "%d %s %d".format(day, monthStr, year)
+    } else ""
 }
 
 /**
@@ -143,11 +142,11 @@ fun dateDigitToStr(digital: String): String {
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String {
-    return if (Regex("""[+]?[\d -]*([(][\d\s-]*[\d]+[\d\s-]*[)])?[\d -]+""").matches(phone))
+fun flattenPhoneNumber(phone: String): String =
+    if (Regex("""([+]?[\d -]*[\d]+[\d -]*)?(\([\d -]*[\d]+[\d -]*\))?[\d -]*[\d]+[\d -]*""").matches(phone))
         Regex("""[\s-()]""").replace(phone, (""))
     else ""
-}
+
 
 /**
  * Средняя
@@ -161,8 +160,10 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int {
     var max = -1
-    for (result in Regex("""\d+""").findAll(jumps)) {
-        if (!jumps.contains(Regex("""[^\d %-]""")) && result.value.toInt() > max) max = result.value.toInt()
+    if (jumps.matches(Regex("""(\d+ |% |- )*(\d+|%|-)?"""))) {
+        for (result in Regex("""\d+""").findAll(jumps)) {
+            if (result.value.toInt() > max) max = result.value.toInt()
+        }
     }
     return max
 }
@@ -181,6 +182,7 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     try {
         var str = String()
+        if (!Regex("""[\d %+\-]*""").matches(jumps)) return -1
         val jumpsFiltered = Regex("""[^\d +]""").replace(jumps, "")
         val b = Regex("""\d+ \+""").findAll(jumpsFiltered)
         for (element in b) {
@@ -205,7 +207,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    require(Regex("""^\d+ *((-|\+) \d+ *)*""").matches(expression))
+    require(Regex("""\d+( ([+\-]) \d+)*""").matches(expression))
     val listOfExpression = expression.split(" ")
     var res = listOfExpression[0].toInt()
     for (i in listOfExpression.indices) {
@@ -227,11 +229,12 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val strToLowerCase = Regex(""", """).replace(str.map { it.toLowerCase() }.joinToString(), "")
+    val strToLowerCase = str.map { it.toLowerCase() }.joinToString("")
     var index = -1
-    for (i in 1 until strToLowerCase.split(" ").size) {
-        val repetitiveWord = strToLowerCase.split(" ")[i]
-        if (strToLowerCase.split(" ")[i-1] == repetitiveWord) {
+    val listOfWords = strToLowerCase.split(" ")
+    for (i in 1 until listOfWords.size) {
+        val repetitiveWord = listOfWords[i]
+        if (strToLowerCase.split(" ")[i - 1] == repetitiveWord) {
             index = strToLowerCase.indexOf("$repetitiveWord $repetitiveWord")
             break
         }
@@ -251,7 +254,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    if (!Regex("""[\S]+ \d+(\.\d+)*(;* [\S]+ \d+(\.\d+)*)*""").matches(
+    if (!Regex("""(\S+ \d+(\.\d+)?)(; \S+ \d+(\.\d+)?)*""").matches(
             description
         )
     ) return ""
@@ -287,38 +290,24 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    try {
-        val romanToInt = mapOf('I' to 1, 'V' to 5, 'X' to 10, 'L' to 50, 'C' to 100, 'D' to 500, 'M' to 1000)
-        var res = romanToInt[roman[0]]!!
-        for (i in 0 until roman.length - 1) {
-            when {
-                romanToInt[roman[i]]!! == romanToInt[roman[i + 1]]!! -> {
-                    res += romanToInt[roman[i + 1]]!!
-                }
-                romanToInt[roman[i]]!! > romanToInt[roman[i + 1]]!! -> {
-                    res += romanToInt[roman[i + 1]]!!
-                }
-                romanToInt[roman[i]]!! < romanToInt[roman[i + 1]]!! -> {
-                    res += romanToInt[roman[i + 1]]!! - 2 * romanToInt[roman[i]]!!
-                }
+    val romanToInt = mapOf('I' to 1, 'V' to 5, 'X' to 10, 'L' to 50, 'C' to 100, 'D' to 500, 'M' to 1000)
+    if (!Regex("""[IVXLCDM]+""").matches(roman)) return -1
+    var res = romanToInt[roman[0]]!!
+    for (i in 0 until roman.length - 1) {
+        when {
+            romanToInt[roman[i]]!! == romanToInt[roman[i + 1]]!! -> {
+                res += romanToInt[roman[i + 1]]!!
+            }
+            romanToInt[roman[i]]!! > romanToInt[roman[i + 1]]!! -> {
+                res += romanToInt[roman[i + 1]]!!
+            }
+            romanToInt[roman[i]]!! < romanToInt[roman[i + 1]]!! -> {
+                res += romanToInt[roman[i + 1]]!! - 2 * romanToInt[roman[i]]!!
             }
         }
-        /**
-         * Скорее всего, как я понял, нет нужды проверять на корректность такие числа, как "IIII", "XIX" и т.д..
-         * Однако мне в голову пришла интересная, на мой взгляд, мысль, с помощью которой можно существенно упростить
-         * данную проверку, не заморачиваясь с дополнительными условиями в этой программе, поэтому ниже под комментарием
-         * я реализую эту необязательную часть программы.
-         */
-        // Зная то, что написанная программа правильно переводит римские числа в арабские и что обратная этой программа,
-        // написанная в четвёртом уроке, тоже работает корректно, я могу сравнить результаты программ и сделать вывод о
-        // корректности введённого римского числа
-        return if (lesson4.task1.roman(res) == roman) res
-        else -1
-        // Конец необязательной части
     }
-    catch (e: Exception) {
-        return -1
-    }
+    return if (lesson4.task1.roman(res) == roman) res
+    else -1
 }
 
 /**
@@ -357,4 +346,36 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    var stepsToLimit = limit
+    var stepsToFinish = commands.length
+    var commandIndex = 0
+    val res = MutableList(cells) { 0 }
+    var pos = floor(cells / 2.0).toInt()
+    var checker = 0
+    for (command in commands) {
+        when (command) {
+            '[' -> checker++
+            ']' -> checker--
+        }
+    }
+    require(checker == 0)
+    while (stepsToLimit > 0 && stepsToFinish > 0) {
+        when (commands[commandIndex]) {
+            '+' -> res[pos] += 1
+            '-' -> res[pos] -= 1
+            '>' -> pos++
+            '<' -> pos--
+            '[' -> {
+
+            }
+            ']' -> {
+
+            }
+        }
+        commandIndex++
+        stepsToLimit--
+        stepsToFinish--
+    }
+    return res
+}
