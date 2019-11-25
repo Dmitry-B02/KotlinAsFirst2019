@@ -118,7 +118,7 @@ fun dateDigitToStr(digital: String): String {
     val day = parts[0].toIntOrNull()
     val month = parts[1].toIntOrNull()
     val year = parts[2].toIntOrNull()
-    return if (day != null && month != null && year != null && day in 1..daysInMonth(
+    return if (day != null && month != null && month in 1..12 && year != null && day in 1..daysInMonth(
             month,
             year
         ) && year >= 0 && month > 0
@@ -347,6 +347,7 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    /*
     var stepsToLimit = limit
     var stepsToFinish = commands.length
     var commandIndex = 0
@@ -378,4 +379,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         stepsToFinish--
     }
     return res
+
+     */
+    TODO()
 }
