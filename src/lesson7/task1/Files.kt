@@ -369,29 +369,53 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val text = StringBuilder()
+    var auxb = 0
+    var auxi = 0
+    var auxs = 0
     text.append("<html>\n<body>\n<p>\n")
     for (line in File(inputName).readLines()) {
         if (line.isEmpty()) text.append("\n</p>\n<p>\n")
         for (word in line.split(" ")) {
-            when {
-                word.startsWith("***") -> text.append("<b><i>")
-                word.startsWith("**") -> text.append("<b>")
-                word.startsWith("*") -> text.append("<i>")
-                word.startsWith("~~") -> text.append("<s>")
+            var htmlword = word
+            var i = word.length - 1
+            while (i > 0) {
+                when {
+                    "**" in htmlword -> {
+                        if (auxb % 2 == 0) {
+                            htmlword = htmlword.replaceFirst("**", "<b>")
+                            auxb++
+                        } else {
+                            htmlword = htmlword.replaceFirst("**", "</b>")
+                            auxb++
+                        }
+                    }
+                    "*" in htmlword -> {
+                        if (auxi % 2 == 0) {
+                            htmlword = htmlword.replaceFirst("*", "<i>")
+                            auxi++
+                        } else {
+                            htmlword = htmlword.replaceFirst("*", "</i>")
+                            auxi++
+                        }
+                    }
+                    "~~" in htmlword -> {
+                        if (auxs % 2 == 0) {
+                            htmlword = htmlword.replaceFirst("~~", "<s>")
+                            auxs++
+                        } else {
+                            htmlword = htmlword.replaceFirst("~~", "</s>")
+                            auxs++
+                        }
+                    }
+                }
+                i--
             }
-            text.append(Regex("""[*~]+""").replace(word, ""))
-            when {
-                word.endsWith("***") -> text.append("</b></i>")
-                word.endsWith("**") -> text.append("</b>")
-                word.endsWith("*") -> text.append("</i>")
-                word.endsWith("~~") -> text.append("</s>")
-            }
-            text.append(" ")
+            text.append("$htmlword ")
         }
         text.trim()
     }
-    text.delete(text.length - 5, text.length) // удаляю <p>\n
-    text.append("</body>\n</html>")
+    text.append("</p>\n</body>\n</html>")
+    File(outputName).writeText(text.toString())
 }
 
 /**
