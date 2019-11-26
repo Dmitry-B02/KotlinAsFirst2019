@@ -369,12 +369,14 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val text = StringBuilder()
+    // контроль закрытия/открытия тегов
     var auxb = 0
     var auxi = 0
     var auxs = 0
+    var o = 0 // счётчик строк
     text.append("<html>\n<body>\n<p>\n")
     for (line in File(inputName).readLines()) {
-        if (line.isEmpty()) text.append("\n</p>\n<p>\n")
+        if (line.isEmpty() && o != 0) text.append("\n</p>\n<p>\n")
         for (word in line.split(" ")) {
             var htmlword = word
             var i = word.length - 1
@@ -413,6 +415,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             text.append("$htmlword ")
         }
         text.trim()
+        o++
     }
     text.append("</p>\n</body>\n</html>")
     File(outputName).writeText(text.toString())
