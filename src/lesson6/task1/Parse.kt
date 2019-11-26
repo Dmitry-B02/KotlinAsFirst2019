@@ -6,7 +6,6 @@ import lesson2.task2.daysInMonth
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.lang.NumberFormatException
-import kotlin.math.floor
 
 /**
  * Пример
@@ -97,7 +96,7 @@ fun dateStrToDigit(str: String): String {
     val month = parts[1]
     val year = parts[2].toIntOrNull()
     val monthDig = months.indexOf(month) + 1
-    return if (day != null && year != null && monthDig in 1..12 && year >= 0 && day in 0..daysInMonth(monthDig, year)) {
+    return if (day != null && year != null && monthDig in 1..12 && year >= 0 && day in 1..daysInMonth(monthDig, year)) {
         "%02d.%02d.%d".format(day, monthDig, year)
     } else ""
 }

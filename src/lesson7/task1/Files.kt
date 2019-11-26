@@ -95,7 +95,6 @@ fun sibilants(inputName: String, outputName: String) {
         val lineToList = line.toMutableList()
         for (i in 0..line.length - 2) {
             if (line[i] in firstLetter && line[i + 1] in secondLetterReplacement.keys) {
-                line.replace(line[i + 1], secondLetterReplacement[line[i + 1]]!!)
                 lineToList[i + 1] = secondLetterReplacement[line[i + 1]]!!
                 lineChanged = lineToList.joinToString("")
             }
@@ -220,7 +219,15 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    val res = mutableMapOf<String, Int>()
+    for (line in File(inputName).readLines()) {
+        for (word in line.split(Regex("""[^а-яА-ЯЁёA-Za-z]+"""))) {
+            if (word != "") res[word.toLowerCase()] = (res[word.toLowerCase()] ?: 0) + 1
+        }
+    }
+    return res.toList().sortedByDescending { it.second }.take(20).toMap()
+}
 
 /**
  * Средняя
@@ -258,7 +265,24 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    val text = StringBuilder()
+    val keysToLowerCase = dictionary.keys.map { it.toLowerCase() }
+    val valueToLowerCase = dictionary.values.map { it.toLowerCase() }
+    val dictionaryMapped = mutableMapOf<Char, String>()
+    for (i in keysToLowerCase.indices) {
+        dictionaryMapped[keysToLowerCase[i]] = valueToLowerCase[i]
+    }
+    for (line in File(inputName).readLines()) {
+        for (char in line) {
+            if (char.toLowerCase() in keysToLowerCase){
+                if (char == char.toLowerCase()) text.append(dictionaryMapped[char])
+                else text.append(dictionaryMapped[char.toLowerCase()]!!.capitalize())
+            }
+            else text.append(char)
+        }
+        text.append("\n")
+    }
+    File(outputName).writeText(text.toString())
 }
 
 /**
@@ -286,7 +310,16 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val text = StringBuilder()
+    var maxLength = 0
+    for (word in File(inputName).readLines()) {
+        if (word.toLowerCase().toSet().size == word.length) maxLength = word.length
+    }
+    for (word in File(inputName).readLines()) {
+        if (word.length == maxLength && word.toLowerCase().toSet().size == word.length) text.append("$word, ")
+    }
+    text.delete(text.length - 2, text.length) // удаляю ", " после последнего слова
+    File(outputName).writeText(text.toString())
 }
 
 /**
