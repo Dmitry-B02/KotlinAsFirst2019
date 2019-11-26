@@ -374,9 +374,13 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var auxi = 0
     var auxs = 0
     var o = 0 // счётчик строк
+    var k = 0 // счётчик пустых строк
     text.append("<html>\n<body>\n<p>\n")
     for (line in File(inputName).readLines()) {
-        if (line.isEmpty() && o != 0) text.append("\n</p>\n<p>\n")
+        if (line.isEmpty() && o != 0 && k % 2 == 0) {
+            text.append("\n</p>\n<p>\n")
+            k++
+        }
         for (word in line.split(" ")) {
             var htmlword = word
             var i = word.length
