@@ -318,7 +318,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     for (word in File(inputName).readLines()) {
         if (word.length == maxLength && word.toLowerCase().toSet().size == word.length) text.append("$word, ")
     }
-    text.delete(text.length - 2, text.length) // удаляю ", " после последнего слова
+    if (text.isNotEmpty()) text.delete(text.length - 2, text.length) // удаляю ", " после последнего слова
     File(outputName).writeText(text.toString())
 }
 
@@ -368,7 +368,30 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val text = StringBuilder()
+    text.append("<html>\n<body>\n<p>\n")
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) text.append("\n</p>\n<p>\n")
+        for (word in line.split(" ")) {
+            when {
+                word.startsWith("***") -> text.append("<b><i>")
+                word.startsWith("**") -> text.append("<b>")
+                word.startsWith("*") -> text.append("<i>")
+                word.startsWith("~~") -> text.append("<s>")
+            }
+            text.append(Regex("""[*~]+""").replace(word, ""))
+            when {
+                word.endsWith("***") -> text.append("</b></i>")
+                word.endsWith("**") -> text.append("</b>")
+                word.endsWith("*") -> text.append("</i>")
+                word.endsWith("~~") -> text.append("</s>")
+            }
+            text.append(" ")
+        }
+        text.trim()
+    }
+    text.delete(text.length - 5, text.length) // удаляю <p>\n
+    text.append("</body>\n</html>")
 }
 
 /**
