@@ -379,7 +379,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         if (line.isEmpty() && o != 0) text.append("\n</p>\n<p>\n")
         for (word in line.split(" ")) {
             var htmlword = word
-            var i = word.length - 1
+            var i = word.length
             while (i > 0) {
                 when {
                     "**" in htmlword -> {
