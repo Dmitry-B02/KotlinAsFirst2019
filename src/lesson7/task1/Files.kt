@@ -424,8 +424,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         o++
     }
     text.append("</p>\n</body>\n</html>")
-    Regex("""<p></p>""").replace(text, "")
-    File(outputName).writeText(text.toString())
+    File(outputName).writeText(
+        Regex("""<p></p>""").replace(text, "")
+    )
 }
 
 /**
