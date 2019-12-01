@@ -385,6 +385,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             }
             else continue
         }
+        else if (line.isEmpty() && o == 0) {
+            k++
+            o++
+            continue
+        }
         k = 0
         for (word in line.split(" ")) {
             var htmlword = word
