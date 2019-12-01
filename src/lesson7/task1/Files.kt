@@ -81,7 +81,6 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val writer = File(outputName).bufferedWriter()
     val firstLetter = listOf('ж', 'Ж', 'ш', 'Ш', 'ч', 'Ч', 'щ', 'Щ')
     val secondLetterReplacement = mapOf(
         'ы' to 'и',
@@ -91,19 +90,20 @@ fun sibilants(inputName: String, outputName: String) {
         'ю' to 'у',
         'Ю' to 'У'
     )
-    for (line in File(inputName).readLines()) {
-        var lineChanged = line
-        val lineToList = line.toMutableList()
-        for (i in 0..line.length - 2) {
-            if (line[i] in firstLetter && line[i + 1] in secondLetterReplacement.keys) {
-                lineToList[i + 1] = secondLetterReplacement[line[i + 1]]!!
-                lineChanged = lineToList.joinToString("")
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            var lineChanged = line
+            val lineToList = line.toMutableList()
+            for (i in 0..line.length - 2) {
+                if (line[i] in firstLetter && line[i + 1] in secondLetterReplacement.keys) {
+                    lineToList[i + 1] = secondLetterReplacement[line[i + 1]]!!
+                    lineChanged = lineToList.joinToString("")
+                }
             }
+            it.write(lineChanged)
+            it.newLine()
         }
-        writer.write(lineChanged)
-        writer.newLine()
     }
-    writer.close()
 }
 
 /**
@@ -381,10 +381,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 k++
                 continue
             } else continue
-        } else if (line.isEmpty() && o == 0) {
-            k++
-            o++
-            continue
         }
         k = 0
         for (word in line.split(" ")) {
@@ -428,6 +424,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         o++
     }
     text.append("</p>\n</body>\n</html>")
+    Regex("""<p></p>""").replace(text, "")
     File(outputName).writeText(text.toString())
 }
 
