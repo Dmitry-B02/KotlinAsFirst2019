@@ -89,6 +89,12 @@ val months = listOf(
     "декабря"
 )
 
+fun isDateValid(day: Int?, month: Int?, year: Int?): Boolean =
+    day != null && month != null && month in 1..12 && year != null && day in 1..daysInMonth(
+        month,
+        year
+    ) && year >= 0 && month > 0
+
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     if (parts.size != 3) return ""
@@ -96,7 +102,7 @@ fun dateStrToDigit(str: String): String {
     val month = parts[1]
     val year = parts[2].toIntOrNull()
     val monthDig = months.indexOf(month) + 1
-    return if (day != null && year != null && monthDig in 1..12 && year >= 0 && day in 1..daysInMonth(monthDig, year)) {
+    return if (isDateValid(day, monthDig, year)) {
         "%02d.%02d.%d".format(day, monthDig, year)
     } else ""
 }
@@ -117,12 +123,8 @@ fun dateDigitToStr(digital: String): String {
     val day = parts[0].toIntOrNull()
     val month = parts[1].toIntOrNull()
     val year = parts[2].toIntOrNull()
-    return if (day != null && month != null && month in 1..12 && year != null && day in 1..daysInMonth(
-            month,
-            year
-        ) && year >= 0 && month > 0
-    ) {
-        val monthStr = months[month - 1]
+    return if (isDateValid(day, month, year)) {
+        val monthStr = months[month!! - 1]
         "%d %s %d".format(day, monthStr, year)
     } else ""
 }
@@ -257,18 +259,19 @@ fun mostExpensive(description: String): String {
             description
         )
     ) return ""
-    val shoppingList = description.split(" ").toMutableList()
+    var shoppingList = description.split(" ").toMutableList()
     val priceList = mutableListOf<Double>()
-    var i = 1
-    val rowsToRemove = mutableListOf<String>()
+    var i = 0
+    val shoppingCart = mutableMapOf<String, String>()
     while (i < shoppingList.size) {
-        rowsToRemove += shoppingList[i]
+        val goods = shoppingList[i]
+        shoppingCart[goods] = shoppingList[i + 1]
         i += 2
     }
-    shoppingList.removeAll(rowsToRemove)
+    shoppingList = shoppingCart.keys.toMutableList()
     var maxPrice = 0.0
     // убираю все знаки, мешающие переводу строки в Double
-    priceList += Regex("""[^\d. ]""").replace(rowsToRemove.joinToString(" "), "")
+    priceList += Regex("""[^\d. ]""").replace(shoppingCart.values.joinToString(" "), "")
         // Превращаю строку в список, убираю пустые элементы и перевожу каждый из элементов в Double
         .split(" ").filter { it != "" }.map { it.toDouble() }
     for (element in priceList) {
