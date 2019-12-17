@@ -181,21 +181,16 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    try {
-        var str = String()
-        if (!Regex("""[\d %+\-]*""").matches(jumps)) return -1
-        val jumpsFiltered = Regex("""[^\d +]""").replace(jumps, "")
-        val b = Regex("""\d+ \+""").findAll(jumpsFiltered)
-        for (element in b) {
-            str += element.value
-        }
-        str = Regex("""\+""").replace(str, "")
-        val listOfResults = str.split(" ")
-        if (listOfResults.isEmpty()) return -1
-        return (listOfResults.max()!!.toInt())
-    } catch (e: Exception) {
-        return -1
+    var highestJump = -1
+    val jumpsFiltered = Regex("""\d+ [+%\-]*\+[+%\-]*""").findAll(jumps) // только удачные прыжки
+    val resultsList = mutableListOf<Int>()
+    for (jump in jumpsFiltered) {
+        resultsList += jump.value.split(" ").first().toInt() // из строки вида "число попытки" беру число и добавляю в список
     }
+    for (result in resultsList) {
+        if (result > highestJump) highestJump = result
+    }
+    return highestJump
 }
 
 /**
@@ -235,7 +230,7 @@ fun firstDuplicateIndex(str: String): Int {
     val listOfWords = strToLowerCase.split(" ")
     for (i in 1 until listOfWords.size) {
         val repetitiveWord = listOfWords[i]
-        if (strToLowerCase.split(" ")[i - 1] == repetitiveWord) {
+        if (listOfWords[i - 1] == repetitiveWord) {
             index = strToLowerCase.indexOf("$repetitiveWord $repetitiveWord")
             break
         }
@@ -385,3 +380,4 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
      */
     TODO()
 }
+

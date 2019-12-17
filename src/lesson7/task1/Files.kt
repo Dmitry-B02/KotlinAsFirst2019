@@ -177,7 +177,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         val spacesAmount = shortenedLine.split(" ").size - 1 // кол-во пробелов = кол-во слов - 1
         if (spacesAmount < 1) {
             text.append(shortenedLine)
-            text.append("\n")
+            text.appendln()
             continue
         }
         val addSpaces = (maxLength - currentLength) / spacesAmount
@@ -264,23 +264,7 @@ fun top20Words(inputName: String): Map<String, Int> {
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    val text = StringBuilder()
-    val keysToLowerCase = dictionary.keys.map { it.toLowerCase() }
-    val valueToLowerCase = dictionary.values.map { it.toLowerCase() }
-    val dictionaryMapped = mutableMapOf<Char, String>()
-    for (i in keysToLowerCase.indices) {
-        dictionaryMapped[keysToLowerCase[i]] = valueToLowerCase[i]
-    }
-    for (line in File(inputName).readLines()) {
-        for (char in line) {
-            if (char.toLowerCase() in keysToLowerCase) {
-                if (char == char.toLowerCase()) text.append(dictionaryMapped[char])
-                else text.append(dictionaryMapped[char.toLowerCase()]!!.capitalize())
-            } else text.append(char)
-        }
-        text.append("\n")
-    }
-    File(outputName).writeText(text.toString())
+    TODO() // сделаю позже
 }
 
 /**
@@ -316,7 +300,9 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     for (word in File(inputName).readLines()) {
         if (word.length == maxLength && word.toLowerCase().toSet().size == word.length) text.append("$word, ")
     }
-    if (text.isNotEmpty()) text.delete(text.length - 2, text.length) // удаляю ", " после последнего слова
+    if (text.isNotEmpty()) {
+        text.delete(text.length - 2, text.length) // удаляю ", " после последнего слова
+    }
     File(outputName).writeText(text.toString())
 }
 
