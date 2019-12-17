@@ -301,7 +301,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
         if (word.length == maxLength && word.toLowerCase().toSet().size == word.length) text.append("$word, ")
     }
     if (text.isNotEmpty()) {
-        text.delete(text.length - 2, text.length) // удаляю ", " после последнего слова
+        text.delete(text.length - 2, text.length) //  удаляю ", " после последнего слова
     }
     File(outputName).writeText(text.toString())
 }
