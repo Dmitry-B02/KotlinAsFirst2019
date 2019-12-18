@@ -199,7 +199,7 @@ fun lineByPoints(a: Point, b: Point): Line {
     if (b.x == a.x) return Line(a, PI / 2)
     val k = (b.y - a.y) / (b.x - a.x)
     val angle = atan(k)
-    if (angle == PI || angle + PI == PI || angle - PI == PI) return Line(a, 0.0)
+    if (angle == PI) return Line(a, 0.0)
     return if (angle < 0) Line(a, angle + PI)
     else Line(a, angle)
 }
@@ -212,7 +212,7 @@ fun lineByPoints(a: Point, b: Point): Line {
 fun bisectorByPoints(a: Point, b: Point): Line {
     val point = Point(((a.x + b.x) / 2), (a.y + b.y) / 2) // середина отрезка
     val k = (b.y - a.y) / (b.x - a.x)
-    val angle = atan(k) + PI / 2
+    val angle = (atan(k) + PI / 2) % PI
     return Line(point, angle)
 }
 
@@ -258,10 +258,15 @@ fun minContainingCircle(vararg points: Point): Circle {
     val farthest1 = longestDistance.begin
     val farthest2 = longestDistance.end
     var minCircle = circleByDiameter(longestDistance)
-    val minRadius = minCircle.radius
+    var minRadius = minCircle.radius
     for (point in points) {
         if (point == farthest1 || point == farthest2) continue
-        if (circleByThreePoints(point, farthest1, farthest2).radius < minRadius) minCircle = circleByThreePoints(point, farthest1, farthest2)
+        val newCircle = circleByThreePoints(farthest1, farthest2, point)
+        if (newCircle.radius < minRadius
+            && points.all { newCircle.contains(it) }) {
+            minCircle = circleByThreePoints(farthest1, farthest2, point)
+            minRadius = minCircle.radius
+        }
     }
     return minCircle
 }
