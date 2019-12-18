@@ -246,22 +246,26 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * соединяющий две самые удалённые точки в данном множестве.
  */
 fun minContainingCircle(vararg points: Point): Circle {
-    require(points.isNotEmpty())
+    if (points.isEmpty()) throw java.lang.IllegalArgumentException()
     if (points.size == 1) return Circle(points[0], 0.0)
     if (points.size == 2) return circleByDiameter(Segment(points[0], points[1]))
-    val longestSegment = diameter(*points)
+    val longestSegment = diameter(*points) // ищу две наиболее отдалённые друг от друга точки
     val farthest1 = longestSegment.begin
     val farthest2 = longestSegment.end
-    val pointsFiltered = points.filter { it != farthest1 && it != farthest2 }
-    var minCircle = circleByDiameter(longestSegment)
-    var minRadius = minCircle.radius
+    var minRadius = Double.MAX_VALUE
+    var finalCircle = circleByDiameter(longestSegment) // окружность, включающая в себя две самые отдалённые друг от друга точки
+    if (points.all { finalCircle.contains(it) }) {
+        minRadius = finalCircle.radius
+    }
+    val pointsFiltered = points.filter { it != farthest1 && it != farthest2 } // все точки без 2-х самых отдалённых
+    // перебираю все окружности, состоящие из 2-х самых отдалённых точек и каждой из оставшихся
     for (point in pointsFiltered) {
         val smallerCircle = circleByThreePoints(farthest1, farthest2, point)
-        if (points.all{ smallerCircle.contains(it) }) {
+        if (smallerCircle.radius < minRadius && pointsFiltered.all { smallerCircle.contains(it) }) {
             minRadius = smallerCircle.radius
-            minCircle = smallerCircle
+            finalCircle = smallerCircle
         }
     }
-    return minCircle
+    return finalCircle
 }
 
