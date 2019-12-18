@@ -187,7 +187,7 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line = lineByPoints(s.begin, s.end)
+fun lineBySegment(s: Segment): Line = TODO()
 
 /**
  * Средняя
@@ -196,12 +196,7 @@ fun lineBySegment(s: Segment): Line = lineByPoints(s.begin, s.end)
  */
 
 fun lineByPoints(a: Point, b: Point): Line {
-    if (b.x == a.x) return Line(a, PI / 2)
-    val k = (b.y - a.y) / (b.x - a.x)
-    val angle = atan(k)
-    if (angle == PI) return Line(a, 0.0)
-    return if (angle < 0) Line(a, angle + PI)
-    else Line(a, angle)
+    TODO()
 }
 
 /**
@@ -252,20 +247,19 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  */
 fun minContainingCircle(vararg points: Point): Circle {
     require(points.isNotEmpty())
-    if (points.size == 1) return Circle(Point(0.0, 0.0), 0.0)
+    if (points.size == 1) return Circle(points[0], 0.0)
     if (points.size == 2) return circleByDiameter(Segment(points[0], points[1]))
-    val longestDistance = diameter(*points)
-    val farthest1 = longestDistance.begin
-    val farthest2 = longestDistance.end
-    var minCircle = circleByDiameter(longestDistance)
+    val longestSegment = diameter(*points)
+    val farthest1 = longestSegment.begin
+    val farthest2 = longestSegment.end
+    val pointsFiltered = points.filter { it != farthest1 && it != farthest2 }
+    var minCircle = circleByDiameter(longestSegment)
     var minRadius = minCircle.radius
-    for (point in points) {
-        if (point == farthest1 || point == farthest2) continue
-        val newCircle = circleByThreePoints(farthest1, farthest2, point)
-        if (newCircle.radius < minRadius
-            && points.all { newCircle.contains(it) }) {
-            minCircle = circleByThreePoints(farthest1, farthest2, point)
-            minRadius = minCircle.radius
+    for (point in pointsFiltered) {
+        val smallerCircle = circleByThreePoints(farthest1, farthest2, point)
+        if (points.all{ smallerCircle.contains(it) }) {
+            minRadius = smallerCircle.radius
+            minCircle = smallerCircle
         }
     }
     return minCircle
