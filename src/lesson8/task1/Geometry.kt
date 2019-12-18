@@ -198,9 +198,10 @@ fun lineBySegment(s: Segment): Line = lineByPoints(s.begin, s.end)
 fun lineByPoints(a: Point, b: Point): Line {
     if (b.x == a.x) return Line(a, PI / 2)
     val k = (b.y - a.y) / (b.x - a.x)
-    val angle = atan(k) % PI
-    return if (angle < 0) Line(a, (2 * PI * angle) % PI)
-    else Line(a, angle % PI)
+    val angle = atan(k)
+    if (angle == PI || b.y == a.y || angle in -1e-6..1e-6) return Line(a, 0.0)
+    return if (angle < 0) Line(a, angle + PI)
+    else Line(a, angle)
 }
 
 /**
