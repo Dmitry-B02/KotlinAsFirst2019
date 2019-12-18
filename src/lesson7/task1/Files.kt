@@ -367,66 +367,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val text = StringBuilder()
-    // контроль закрытия/открытия тегов
-    var auxb = 0
-    var auxi = 0
-    var auxs = 0
-    var o = 0 // счётчик строк
-    var k = 0 // счётчик пустых строк
-    text.append("<html>\n<body>\n<p>\n")
-    for (line in File(inputName).readLines()) {
-        if (line.isEmpty() && o != 0) {
-            if (k == 0) {
-                text.append("\n</p>\n<p>\n")
-                k++
-                continue
-            } else continue
-        }
-        k = 0
-        for (word in line.split(" ")) {
-            var htmlword = word
-            var i = word.length
-            while (i > 0) {
-                when {
-                    "**" in htmlword -> {
-                        if (auxb % 2 == 0) {
-                            htmlword = htmlword.replaceFirst("**", "<b>")
-                            auxb++
-                        } else {
-                            htmlword = htmlword.replaceFirst("**", "</b>")
-                            auxb++
-                        }
-                    }
-                    "*" in htmlword -> {
-                        if (auxi % 2 == 0) {
-                            htmlword = htmlword.replaceFirst("*", "<i>")
-                            auxi++
-                        } else {
-                            htmlword = htmlword.replaceFirst("*", "</i>")
-                            auxi++
-                        }
-                    }
-                    "~~" in htmlword -> {
-                        if (auxs % 2 == 0) {
-                            htmlword = htmlword.replaceFirst("~~", "<s>")
-                            auxs++
-                        } else {
-                            htmlword = htmlword.replaceFirst("~~", "</s>")
-                            auxs++
-                        }
-                    }
-                }
-                i--
-            }
-            text.append("$htmlword ")
-        }
-        text.trim()
-        o++
-    }
-    text.append("</p>\n</body>\n</html>")
-    val textFiltered = Regex("""<p></p>""").replace(text, "")
-    File(outputName).writeText(textFiltered)
+    TODO()
 }
 
 /**

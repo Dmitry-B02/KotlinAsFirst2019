@@ -199,8 +199,8 @@ fun lineByPoints(a: Point, b: Point): Line {
     if (b.x == a.x) return Line(a, PI / 2)
     val k = (b.y - a.y) / (b.x - a.x)
     val angle = atan(k) % PI
-    if (angle < 0) return Line(a, angle + PI)
-    return Line(a, angle)
+    return if (angle < 0) Line(a, (2 * PI * angle) % PI)
+    else Line(a, angle % PI)
 }
 
 /**
@@ -249,5 +249,9 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * три точки данного множества, либо иметь своим диаметром отрезок,
  * соединяющий две самые удалённые точки в данном множестве.
  */
-fun minContainingCircle(vararg points: Point): Circle = TODO()
+fun minContainingCircle(vararg points: Point): Circle {
+  //  if (points.isEmpty()) throw java.lang.IllegalArgumentException()
+   // return circleByThreePoints(points[1], points[3], points[4])
+    TODO()
+}
 
