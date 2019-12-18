@@ -199,7 +199,7 @@ fun lineByPoints(a: Point, b: Point): Line {
     if (b.x == a.x) return Line(a, PI / 2)
     val k = (b.y - a.y) / (b.x - a.x)
     val angle = atan(k)
-    if (angle == PI || angle + PI == PI) return Line(a, 0.0)
+    if (angle == PI || angle + PI == PI || angle - PI == PI) return Line(a, 0.0)
     return if (angle < 0) Line(a, angle + PI)
     else Line(a, angle)
 }
@@ -255,7 +255,14 @@ fun minContainingCircle(vararg points: Point): Circle {
     if (points.size == 1) return Circle(Point(0.0, 0.0), 0.0)
     if (points.size == 2) return circleByDiameter(Segment(points[0], points[1]))
     val longestDistance = diameter(*points)
-    val finalCircle = circleByDiameter(longestDistance) // охватывает все точки, но не самый минимальный
-    TODO()
+    val farthest1 = longestDistance.begin
+    val farthest2 = longestDistance.end
+    var minCircle = circleByDiameter(longestDistance)
+    val minRadius = minCircle.radius
+    for (point in points) {
+        if (point == farthest1 || point == farthest2) continue
+        if (circleByThreePoints(point, farthest1, farthest2).radius < minRadius) minCircle = circleByThreePoints(point, farthest1, farthest2)
+    }
+    return minCircle
 }
 
