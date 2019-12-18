@@ -194,6 +194,7 @@ fun lineBySegment(s: Segment): Line = lineByPoints(s.begin, s.end)
  *
  * Построить прямую по двум точкам
  */
+
 fun lineByPoints(a: Point, b: Point): Line {
     if (b.x == a.x) return Line(a, PI / 2)
     val k = (b.y - a.y) / (b.x - a.x)
@@ -208,7 +209,7 @@ fun lineByPoints(a: Point, b: Point): Line {
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
-    val point = Point((a.x + b.x / 2), (a.y + b.y) / 2) // середина отрезка
+    val point = Point(((a.x + b.x) / 2), (a.y + b.y) / 2) // середина отрезка
     val k = (b.y - a.y) / (b.x - a.x)
     val angle = atan(k) + PI / 2
     return Line(point, angle)
@@ -220,22 +221,7 @@ fun bisectorByPoints(a: Point, b: Point): Line {
  * Задан список из n окружностей на плоскости. Найти пару наименее удалённых из них.
  * Если в списке менее двух окружностей, бросить IllegalArgumentException
  */
-fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
-    require(circles.size > 2)
-    var min = Double.MAX_VALUE
-    var firstIndex = 0
-    var secondIndex = 0
-    for (i in 0 until circles.size - 1) {
-        for (j in i + 1 until circles.size) {
-            if (circles[i].distance(circles[j]) < min) {
-                min = circles[i].distance(circles[j])
-                firstIndex = i
-                secondIndex = j
-            }
-        }
-    }
-    return circles[firstIndex] to circles[secondIndex]
-}
+fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
 
 /**
  * Сложная
@@ -246,7 +232,11 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * (построить окружность по трём точкам, или
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
-fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
+fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
+    val center = bisectorByPoints(a, b).crossPoint(bisectorByPoints(a, c))
+    val radius = center.distance(a)
+    return Circle(center, radius)
+}
 
 /**
  * Очень сложная
