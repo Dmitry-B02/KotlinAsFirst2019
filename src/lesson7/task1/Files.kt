@@ -264,7 +264,21 @@ fun top20Words(inputName: String): Map<String, Int> {
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()  // сделаю позже
+    val text = StringBuilder()
+    val keysToLowerCase = dictionary.keys.map { it.toLowerCase() }
+    val valueToLowerCase = dictionary.values.map { it.toLowerCase() }
+    val dictionaryMapped = mutableMapOf<Char, String>()
+    for (i in keysToLowerCase.indices) {
+        dictionaryMapped[keysToLowerCase[i]] = valueToLowerCase[i]
+    }
+    for (char in File(inputName).readText()) {
+        if (char.toLowerCase() in keysToLowerCase) {
+            if (char == char.toLowerCase()) text.append(dictionaryMapped[char])
+            else text.append(dictionaryMapped[char.toLowerCase()]!!.capitalize())
+        }
+        else text.append(char)
+    }
+    File(outputName).writeText(text.toString())
 }
 
 /**
@@ -292,12 +306,13 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    val text = StringBuilder()
     var maxLength = 0
-    for (word in File(inputName).readLines()) {
-        if (word.toLowerCase().toSet().size == word.length) maxLength = word.length
+    val text = StringBuilder()
+    val listOfWords = File(inputName).readText().split(Regex("""\s+"""))
+    for (word in listOfWords) {
+        if ( word.length > maxLength && word.toLowerCase().toSet().size == word.length) maxLength = word.length
     }
-    for (word in File(inputName).readLines()) {
+    for (word in listOfWords) {
         if (word.length == maxLength && word.toLowerCase().toSet().size == word.length) text.append("$word, ")
     }
     if (text.isNotEmpty()) {
@@ -410,8 +425,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         o++
     }
     text.append("</p>\n</body>\n</html>")
-    val result = Regex("""<p></p>""").replace(text.toString(), "")
-    File(outputName).writeText(result)
+    File(outputName).writeText(Regex("""<p></p>""").replace(text.toString(), ""))
 }
 
 /**
