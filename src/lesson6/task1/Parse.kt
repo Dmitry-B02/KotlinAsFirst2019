@@ -181,11 +181,13 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
+    if (!Regex("""\d+ [%+\-]+( \d+ [%+\-]+)*""").matches(jumps)) return -1
     var highestJump = -1
     val jumpsFiltered = Regex("""\d+ [+%\-]*\+[+%\-]*""").findAll(jumps) // только удачные прыжки
     val resultsList = mutableListOf<Int>()
     for (jump in jumpsFiltered) {
-        resultsList += jump.value.split(" ").first().toInt() // из строки вида "число попытки" беру число и добавляю в список
+        resultsList += jump.value.split(" ").first()
+            .toInt() // из строки вида "число попытки" беру число и добавляю в список
     }
     for (result in resultsList) {
         if (result > highestJump) highestJump = result

@@ -275,8 +275,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         if (char.toLowerCase() in keysToLowerCase) {
             if (char == char.toLowerCase()) text.append(dictionaryMapped[char])
             else text.append(dictionaryMapped[char.toLowerCase()]!!.capitalize())
-        }
-        else text.append(char)
+        } else text.append(char)
     }
     File(outputName).writeText(text.toString())
 }
@@ -310,10 +309,16 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val text = StringBuilder()
     val listOfWords = File(inputName).readText().split(Regex("""\s+"""))
     for (word in listOfWords) {
-        if ( word.length > maxLength && word.toLowerCase().toSet().size == word.length) maxLength = word.length
+        val uniqueLetters = word.toLowerCase().toSet().size
+        if (word.length > maxLength && uniqueLetters == word.length) {
+            maxLength = word.length
+        }
     }
     for (word in listOfWords) {
-        if (word.length == maxLength && word.toLowerCase().toSet().size == word.length) text.append("$word, ")
+        val uniqueLetters = word.toLowerCase().toSet().size
+        if (word.length == maxLength && uniqueLetters == word.length) {
+            text.append("$word, ")
+        }
     }
     if (text.isNotEmpty()) {
         text.delete(text.length - 2, text.length) //  удаляю ", " после последнего слова

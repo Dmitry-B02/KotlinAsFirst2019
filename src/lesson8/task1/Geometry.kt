@@ -108,7 +108,7 @@ data class Segment(val begin: Point, val end: Point) {
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
 fun diameter(vararg points: Point): Segment {
-    if (points.size < 2) throw IllegalArgumentException()
+    require(points.size >= 2)
     val point01 = Point(0.0, 0.0)
     val point02 = Point(0.0, 0.0)
     var diameter = Segment(point01, point02)
@@ -163,9 +163,11 @@ class Line private constructor(val b: Double, val angle: Double) {
                 other.angle
             ))
             y = x * sin(angle) / cos(angle) + b / cos(angle)
-        }
-        else {
-            x = (b - other.b * (cos(angle) / cos(other.angle))) / (sin(other.angle) * cos(angle) / cos(other.angle) - sin(angle))
+        } else {
+            x =
+                (b - other.b * (cos(angle) / cos(other.angle))) / (sin(other.angle) * cos(angle) / cos(other.angle) - sin(
+                    angle
+                ))
             y = x * sin(other.angle) / cos(other.angle) + other.b / cos(other.angle)
         }
         return Point(x, y)
@@ -253,7 +255,8 @@ fun minContainingCircle(vararg points: Point): Circle {
     val farthest1 = longestSegment.begin
     val farthest2 = longestSegment.end
     var minRadius = Double.MAX_VALUE
-    var finalCircle = circleByDiameter(longestSegment) // окружность, включающая в себя две самые отдалённые друг от друга точки
+    var finalCircle =
+        circleByDiameter(longestSegment) // окружность, включающая в себя две самые отдалённые друг от друга точки
     if (points.all { finalCircle.contains(it) }) {
         minRadius = finalCircle.radius
     }
