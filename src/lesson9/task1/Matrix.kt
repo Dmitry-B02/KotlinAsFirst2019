@@ -53,17 +53,17 @@ fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> {
  */
 class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : Matrix<E> {
 
-    val table = MutableList(width) { MutableList(height) { e } }
+    val table = MutableList(height) { MutableList(width) { e } }
 
     override fun get(row: Int, column: Int): E {
-        require(row in 0 until width && column in 0 until height)
+        require(row in 0 until height && column in 0 until width)
         return table[row][column]
     }
 
     override fun get(cell: Cell): E = get(cell.row, cell.column)
 
     override fun set(row: Int, column: Int, value: E) {
-        require(row in 0 until width && column in 0 until height)
+        require(row in 0 until height && column in 0 until width)
         table[row][column] = value
     }
 
@@ -72,7 +72,20 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
     override fun equals(other: Any?) =
         other is MatrixImpl<*> && width == other.width && height == other.height && table == other.table
 
-    override fun toString(): String = TODO()
+    override fun toString(): String {
+        val sb = StringBuilder()
+        sb.append("[")
+        for (row in 0..height - 1) {
+            sb.append("[")
+            for (column in 0 until width) {
+                sb.append(this[row, column])
+                // Подумайте здесь про запятые и пробелы, или попробуйте использовать joinToString
+            }
+            sb.append("] ")
+        }
+        sb.append("] ")
+        return sb.split(" ").joinToString(", ")
+    }
 
     override fun hashCode(): Int {
         var result = height
