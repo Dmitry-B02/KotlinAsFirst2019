@@ -165,9 +165,9 @@ class Line private constructor(val b: Double, val angle: Double) {
             y = x * sin(angle) / cos(angle) + b / cos(angle)
         } else {
             x =
-                (b - other.b * (cos(angle) / cos(other.angle))) / (sin(other.angle) * cos(angle) / cos(other.angle) - sin(
-                    angle
-                ))
+                (b - other.b * (cos(angle) / cos(other.angle))) / (sin(other.angle) * cos(angle) / cos(
+                    other.angle
+                ) - sin(angle))
             y = x * sin(other.angle) / cos(other.angle) + other.b / cos(other.angle)
         }
         return Point(x, y)
@@ -248,7 +248,7 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * соединяющий две самые удалённые точки в данном множестве.
  */
 fun minContainingCircle(vararg points: Point): Circle {
-    if (points.isEmpty()) throw java.lang.IllegalArgumentException()
+    require(points.isNotEmpty())
     if (points.size == 1) return Circle(points[0], 0.0)
     if (points.size == 2) return circleByDiameter(Segment(points[0], points[1]))
     val longestSegment = diameter(*points) // ищу две наиболее отдалённые друг от друга точки
