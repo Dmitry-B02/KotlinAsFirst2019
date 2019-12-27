@@ -75,16 +75,15 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
     override fun toString(): String {
         val sb = StringBuilder()
         sb.append("[")
-        for (row in 0..height - 1) {
+        for (row in 0 until height) {
             sb.append("[")
             for (column in 0 until width) {
                 sb.append(this[row, column])
-                // Подумайте здесь про запятые и пробелы, или попробуйте использовать joinToString
             }
             sb.append("] ")
         }
         sb.append("] ")
-        return sb.split(" ").joinToString(", ")
+        return sb.split(" ").filter { it != "" }.joinToString(", ")
     }
 
     override fun hashCode(): Int {
